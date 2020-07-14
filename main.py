@@ -2,6 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.messagebox as msg
 import pandas as pd
+import numpy as np
+import time
 
 class MainWindow():
     def __init__(self):
@@ -153,8 +155,37 @@ class CollectDataWindow():
         self.body()
 
         self.data = pd.DataFrame(columns=["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"])
+        self.data_len = len(self.data.columns)
+        self.point = np.zeros((1, self.data_len), dtype=int)
+
+        self.set = 0
+        self.game = 0
+        self.score = 0
+        self.score1 = 0
+        self.score2 = 0
+        self.game1 = 0
+        self.game2 = 0
+        self.set1 = 0
+        self.set2 = 0
 
     def body(self):
+        data_dict = {"set": 0,  # 盘
+                    "game": 1,  # 局
+                    "score": 2,  # 分 
+                    "rally": 3,  # 球
+                    "player": 4,  # 球员
+                    "position": 5,  # 站位
+                    "tech": 6,  # 技术
+                    "place": 7,  # 落点
+                    "state": 8,  # 状态
+                    "winner": 9,  # 效果
+                    "score1": 10,  # 分1
+                    "score2": 11,  # 分2
+                    "game1": 12,  # 局1
+                    "game2": 13,  # 局2
+                    "set1": 14,  # 盘1
+                    "set2": 15  # 盘2
+                    }
         # ====================================================================
         # command
         # ====================================================================
@@ -165,6 +196,10 @@ class CollectDataWindow():
             game_p2.set("0")
             score_p1.set("0")
             score_p2.set("0")
+            self.point[0][data_dict["set"]] = 1
+            self.point[0][data_dict["game"]] = 1
+            self.point[0][data_dict["score"]] = 1
+            self.point[0][data_dict["rally"]] = 1
 
         def button_change():
             temp = p_up.get()
@@ -174,245 +209,70 @@ class CollectDataWindow():
         # ----------------------------------------
         # court
         # ----------------------------------------
-        def court_up1():
-            return 0
-        def court_up2():
-            return 0
-        def court_up3():
-            return 0
-        def court_up4():
-            return 0
-        def court_up5():
-            return 0
-        def court_up6():
-            return 0
-        def court_up7():
-            return 0
-        def court_up8():
-            return 0
-        def court_up9():
-            return 0
-        def court_up10():
-            return 0
-        def court_up11():
-            return 0
-        def court_up12():
-            return 0
-        def court_up13():
-            return 0
-        def court_up14():
-            return 0
-        def court_up15():
-            return 0
-        def court_up16():
-            return 0
-        def court_up17():
-            return 0
-        def court_up18():
-            return 0
-        def court_up19():
-            return 0
-        def court_up20():
-            return 0
-        def court_up21():
-            return 0
-        def court_up22():
-            return 0
-        def court_up23():
-            return 0
-        def court_up24():
-            return 0
-        def court_up25():
-            return 0
-        def court_up26():
-            return 0
-        def court_up27():
-            return 0
-        def court_up28():
-            return 0
-        def court_up29():
-            return 0
-        def court_up30():
-            return 0
-        def court_up31():
-            return 0
-        def court_up32():
-            return 0
-        def court_up33():
-            return 0
-        def court_up34():
-            return 0
-        def court_up35():
-            return 0
-        def court_up36():
-            return 0
-        def court_up37():
-            return 0
-        def court_up38():
-            return 0
-        def court_up39():
-            return 0
-        def court_up40():
-            return 0
-        def court_up41():
-            return 0
-        def court_up42():
-            return 0
-        def court_down1():
-            return 0
-        def court_down2():
-            return 0
-        def court_down3():
-            return 0
-        def court_down4():
-            return 0
-        def court_down5():
-            return 0
-        def court_down6():
-            return 0
-        def court_down7():
-            return 0
-        def court_down8():
-            return 0
-        def court_down9():
-            return 0
-        def court_down10():
-            return 0
-        def court_down11():
-            return 0
-        def court_down12():
-            return 0
-        def court_down13():
-            return 0
-        def court_down14():
-            return 0
-        def court_down15():
-            return 0
-        def court_down16():
-            return 0
-        def court_down17():
-            return 0
-        def court_down18():
-            return 0
-        def court_down19():
-            return 0
-        def court_down20():
-            return 0
-        def court_down21():
-            return 0
-        def court_down22():
-            return 0
-        def court_down23():
-            return 0
-        def court_down24():
-            return 0
-        def court_down25():
-            return 0
-        def court_down26():
-            return 0
-        def court_down27():
-            return 0
-        def court_down28():
-            return 0
-        def court_down29():
-            return 0
-        def court_down30():
-            return 0
-        def court_down31():
-            return 0
-        def court_down32():
-            return 0
-        def court_down33():
-            return 0
-        def court_down34():
-            return 0
-        def court_down35():
-            return 0
-        def court_down36():
-            return 0
-        def court_down37():
-            return 0
-        def court_down38():
-            return 0
-        def court_down39():
-            return 0
-        def court_down40():
-            return 0
-        def court_down41():
-            return 0
-        def court_down42():
-            return 0
+        def court(position, i):
+            if self.point[-1][data_dict["position"]] == 0:
+                self.point[-1][data_dict["position"]] = i
+                if position == "up":
+                    if p_up.get() == self.p1_name:
+                        self.point[-1][data_dict["player"]] = 1
+                    elif p_up.get() == self.p2_name:
+                        self.point[-1][data_dict["player"]] = 2
+                elif position == "down":
+                    if p_down.get() == self.p1_name:
+                        self.point[-1][data_dict["player"]] = 1
+                    elif p_down.get() == self.p2_name:
+                        self.point[-1][data_dict["player"]] = 2
+            elif self.point[-1][data_dict["place"]] == 0:
+                self.point[-1][data_dict["place"]] = i
 
         # ----------------------------------------
         # technique
         # ----------------------------------------
-        def tech1():
-            return 0
-        def tech2():
-            return 0
-        def tech3():
-            return 0
-        def tech4():
-            return 0
-        def tech5():
-            return 0
-        def tech6():
-            return 0
-        def tech7():
-            return 0
-        def tech8():
-            return 0
-        def tech9():
-            return 0
-        def tech10():
-            return 0
-        def tech11():
-            return 0
-        def tech12():
-            return 0
-        def tech13():
-            return 0
-        def tech14():
-            return 0
+        def tech(i):
+            self.point[-1][data_dict["tech"]] = i
 
         # ----------------------------------------
         # state
         # ----------------------------------------
-        def state1():
-            return 0
-        def state2():
-            return 0
-        def state3():
-            return 0
-        def state4():
-            return 0
-        def state5():
-            return 0
-        def state6():
-            return 0
-        def state7():
-            return 0
-        def state8():
-            return 0
+        def state(i):
+            self.point[-1][data_dict["state"]] = i
 
         # ----------------------------------------
         # score board
         # ----------------------------------------
         def set_plus(player):
+            # write self.point
+            self.point[-1][data_dict["set"]] += 1
+            self.point[-1][data_dict["set"+str(player)]] += 1
+            self.point[-1][data_dict["game1"]] = 0
+            self.point[-1][data_dict["game2"]] = 0
+            # update score board
             set_ = set_p1 if player == 1 else set_p2
-            set_other = set_p2 if player == 1 else set_p1
+            # set_other = set_p2 if player == 1 else set_p1
+            set_.set(str(int(set_.get())+1))
+
         def game_plus(player):
+            # write self.point
+            self.point[-1][data_dict["game"]] += 1
+            self.point[-1][data_dict["game"+str(player)]] += 1
+            self.point[-1][data_dict["score1"]] = 0
+            self.point[-1][data_dict["score2"]] = 0
+            # update score board
             game = game_p1 if player == 1 else game_p2
-            game_other = game_p2 if player == 2 else game_p1
+            game_other = game_p2 if player == 1 else game_p1
             g_value = int(game.get())
             g_other_value = int(game_other.get())
             if g_value == 6 and g_other_value == 6:
+                game.set("7")
+                time.sleep(1)
                 set_plus(player)
                 game.set("0")
                 game_other.set("0")
             elif g_other_value == 6:
                 game.set("6")
             elif g_value == 5 and g_other_value < 5:
+                game.set("6")
+                time.sleep(1)
                 set_plus(player)
                 game.set("0")
                 game_other.set("0")
@@ -421,10 +281,26 @@ class CollectDataWindow():
 
 
         def score_plus(player):
+            # write self.point
+            self.point[-1][data_dict["score"]] += 1
+            self.point[-1][data_dict["score"+str(player)]] += 1
+            # update score board
             score = score_p1 if player == 1 else score_p2
             score_other = score_p2 if player == 1 else score_p1
             if game_p1.get() == "6" and game_p2.get() == "6":
-                pass
+                score.set(str(int(score.get()) + 1))
+                s_value = int(score.get())
+                s_other_value = int(score_other.get())
+                if s_value == 7 and s_other_value < 6:
+                    time.sleep(1)
+                    game_plus(player)
+                    score.set("0")
+                    score_other.set("0")
+                elif s_value > 7 and s_value > s_other_value + 1:
+                    time.sleep(1)
+                    game_plus(player)
+                    score.set("0")
+                    score_other.set("0")
             else:
                 if score.get() == "0":
                     score.set("15")
@@ -447,14 +323,64 @@ class CollectDataWindow():
                 elif score.get() == "-":
                     score.set("40")
                     score_other.set("40")
-        def button_next():
-            if winner.get() == self.p1_name:
-                score_plus(1)
-            elif winner.get() ==self.p2_name:
-                score_plus(2)
-            server.set("")
-            winner.set("")
 
+        def button_next():
+            if score_p1.get() == "":
+                msg.showerror(title="错误", message="请点击“开始比赛”！")
+            elif server.get() == "":
+                msg.showerror(title="错误", message="请选择发球方！")
+            elif winner.get() == "":
+                self.point = np.vstack((self.point, np.zeros((1, self.data_len), dtype=int)))
+                self.point[-1][data_dict["set"]] = self.point[-2][data_dict["set"]]
+                self.point[-1][data_dict["game"]] = self.point[-2][data_dict["game"]]
+                self.point[-1][data_dict["score"]] = self.point[-2][data_dict["score"]]
+                self.point[-1][data_dict["rally"]] = self.point[-2][data_dict["rally"]] + 1
+                self.point[-1][data_dict["score1"]] = self.point[-2][data_dict["score1"]]
+                self.point[-1][data_dict["score2"]] = self.point[-2][data_dict["score2"]]
+                self.point[-1][data_dict["game1"]] = self.point[-2][data_dict["game1"]]
+                self.point[-1][data_dict["game2"]] = self.point[-2][data_dict["game2"]]
+                self.point[-1][data_dict["set1"]] = self.point[-2][data_dict["set1"]]
+                self.point[-1][data_dict["set2"]] = self.point[-2][data_dict["set2"]]
+            else:
+                if winner.get() == self.p1_name:
+                    player = 1
+                elif winner.get() ==self.p2_name:
+                    player = 2
+                # update score board
+                score_plus(player)
+                server.set("")
+                winner.set("")
+                # write self.point
+                self.set = self.point[-1][data_dict["set"]]
+                self.game = self.point[-1][data_dict["game"]]
+                self.score = self.point[-1][data_dict["score"]]
+                self.score1 = self.point[-1][data_dict["score1"]]
+                self.score2 = self.point[-1][data_dict["score2"]]
+                self.game1 = self.point[-1][data_dict["game1"]]
+                self.game2 = self.point[-1][data_dict["game2"]]
+                self.set1 = self.point[-1][data_dict["set1"]]
+                self.set2 = self.point[-1][data_dict["set2"]]
+                for i in range(len(self.point)):
+                    self.point[i][data_dict["winner"]] = player
+                point = pd.DataFrame(self.point, columns=["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"])
+                self.data = self.data.append(point, ignore_index=True)
+                self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '-p2_' + self.p2_name + '.csv', index=False, sep=',')
+
+                self.point = np.zeros((1, self.data_len), dtype=int)
+                self.point[0][data_dict["set"]] = self.set
+                self.point[0][data_dict["game"]] = self.game
+                self.point[0][data_dict["score"]] = self.score
+                self.point[0][data_dict["rally"]] = 1
+                self.point[0][data_dict["score1"]] = self.score1
+                self.point[0][data_dict["score2"]] = self.score2
+                self.point[0][data_dict["game1"]] = self.game1
+                self.point[0][data_dict["game2"]] = self.game2
+                self.point[0][data_dict["set1"]] = self.set1
+                self.point[0][data_dict["set2"]] = self.set2
+
+        # ----------------------------------------
+        # export data
+        # ----------------------------------------
         def button_export():
             self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '-p2_' + self.p2_name + '.csv', index=False, sep=',')
             msg.showinfo(title="提示", message="数据导出成功！")
@@ -599,107 +525,107 @@ class CollectDataWindow():
         # line 1 ========================
         court_l1 = ttk.Frame(group_court)
         court_l1.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l1, text="31", command=court_up31, width=3, bg="green")\
+        tk.Button(court_l1, text="31", command=lambda: court("up", 31), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l1, text="27", command=court_up27, width=3, bg="green")\
+        tk.Button(court_l1, text="27", command=lambda: court("up", 27), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l1, text="28", command=court_up28, width=3, bg="green")\
+        tk.Button(court_l1, text="28", command=lambda: court("up", 28), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l1, text="29", command=court_up29, width=3, bg="green")\
+        tk.Button(court_l1, text="29", command=lambda: court("up", 29), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l1, text="30", command=court_up30, width=3, bg="green")\
+        tk.Button(court_l1, text="30", command=lambda: court("up", 30), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l1, text="32", command=court_up32, width=3, bg="green")\
+        tk.Button(court_l1, text="32", command=lambda: court("up", 32), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 2 ========================
         court_l2 = ttk.Frame(group_court)
         court_l2.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l2, text="33", command=court_up33, width=3, bg="green")\
+        tk.Button(court_l2, text="33", command=lambda: court("up", 33), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l2, text="23", command=court_up23, width=3, bg="green")\
+        tk.Button(court_l2, text="23", command=lambda: court("up", 23), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l2, text="24", command=court_up24, width=3, bg="green")\
+        tk.Button(court_l2, text="24", command=lambda: court("up", 24), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l2, text="25", command=court_up25, width=3, bg="green")\
+        tk.Button(court_l2, text="25", command=lambda: court("up", 25), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l2, text="26", command=court_up26, width=3, bg="green")\
+        tk.Button(court_l2, text="26", command=lambda: court("up", 26), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l2, text="34", command=court_up34, width=3, bg="green")\
+        tk.Button(court_l2, text="34", command=lambda: court("up", 34), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 3 ========================
         court_l3 = ttk.Frame(group_court)
         court_l3.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l3, text="35", command=court_up35, width=3, bg="green")\
+        tk.Button(court_l3, text="35", command=lambda: court("up", 35), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l3, text="7", command=court_up7, width=3, bg="deepskyblue")\
+        tk.Button(court_l3, text="7", command=lambda: court("up", 7), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l3, text="8", command=court_up8, width=3, bg="deepskyblue")\
+        tk.Button(court_l3, text="8", command=lambda: court("up", 8), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l3, text="9", command=court_up9, width=3, bg="deepskyblue")\
+        tk.Button(court_l3, text="9", command=lambda: court("up", 9), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l3, text="10", command=court_up10, width=3, bg="deepskyblue")\
+        tk.Button(court_l3, text="10", command=lambda: court("up", 10), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l3, text="36", command=court_up36, width=3, bg="green")\
+        tk.Button(court_l3, text="36", command=lambda: court("up", 36), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 4 ========================
         court_l4 = ttk.Frame(group_court)
         court_l4.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l4, text="37", command=court_up37, width=3, bg="green")\
+        tk.Button(court_l4, text="37", command=lambda: court("up", 37), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l4, text="11", command=court_up11, width=3, bg="deepskyblue")\
+        tk.Button(court_l4, text="11", command=lambda: court("up", 11), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l4, text="12", command=court_up12, width=3, bg="deepskyblue")\
+        tk.Button(court_l4, text="12", command=lambda: court("up", 12), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l4, text="13", command=court_up13, width=3, bg="deepskyblue")\
+        tk.Button(court_l4, text="13", command=lambda: court("up", 13), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l4, text="14", command=court_up14, width=3, bg="deepskyblue")\
+        tk.Button(court_l4, text="14", command=lambda: court("up", 14), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l4, text="38", command=court_up38, width=3, bg="green")\
+        tk.Button(court_l4, text="38", command=lambda: court("up", 38), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 5 ========================
         court_l5 = ttk.Frame(group_court)
         court_l5.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l5, text="1", command=court_up1, width=3, bg="cadetblue")\
+        tk.Button(court_l5, text="1", command=lambda: court("up", 1), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l5, text="2", command=court_up2, width=3, bg="cadetblue")\
+        tk.Button(court_l5, text="2", command=lambda: court("up", 2), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l5, text="3", command=court_up3, width=3, bg="cadetblue")\
+        tk.Button(court_l5, text="3", command=lambda: court("up", 3), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l5, text="4", command=court_up4, width=3, bg="cadetblue")\
+        tk.Button(court_l5, text="4", command=lambda: court("up", 4), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l5, text="5", command=court_up5, width=3, bg="cadetblue")\
+        tk.Button(court_l5, text="5", command=lambda: court("up", 5), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l5, text="6", command=court_up6, width=3, bg="cadetblue")\
+        tk.Button(court_l5, text="6", command=lambda: court("up", 6), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
         # line 6 ========================
         court_l6 = ttk.Frame(group_court)
         court_l6.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l6, text="39", command=court_up39, width=3, bg="green")\
+        tk.Button(court_l6, text="39", command=lambda: court("up", 39), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l6, text="15", command=court_up15, width=3, bg="deepskyblue")\
+        tk.Button(court_l6, text="15", command=lambda: court("up", 15), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l6, text="16", command=court_up16, width=3, bg="deepskyblue")\
+        tk.Button(court_l6, text="16", command=lambda: court("up", 16), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l6, text="17", command=court_up17, width=3, bg="deepskyblue")\
+        tk.Button(court_l6, text="17", command=lambda: court("up", 17), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l6, text="18", command=court_up18, width=3, bg="deepskyblue")\
+        tk.Button(court_l6, text="18", command=lambda: court("up", 18), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l6, text="40", command=court_up40, width=3, bg="green")\
+        tk.Button(court_l6, text="40", command=lambda: court("up", 40), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 7 ========================
         court_l7 = ttk.Frame(group_court)
         court_l7.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l7, text="41", command=court_up41, width=3, bg="green")\
+        tk.Button(court_l7, text="41", command=lambda: court("up", 41), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l7, text="19", command=court_up19, width=3, bg="deepskyblue")\
+        tk.Button(court_l7, text="19", command=lambda: court("up", 19), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l7, text="20", command=court_up20, width=3, bg="deepskyblue")\
+        tk.Button(court_l7, text="20", command=lambda: court("up", 20), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l7, text="21", command=court_up21, width=3, bg="deepskyblue")\
+        tk.Button(court_l7, text="21", command=lambda: court("up", 21), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l7, text="22", command=court_up22, width=3, bg="deepskyblue")\
+        tk.Button(court_l7, text="22", command=lambda: court("up", 22), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l7, text="42", command=court_up42, width=3, bg="green")\
+        tk.Button(court_l7, text="42", command=lambda: court("up", 42), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line net ========================
         ttk.Label(group_court, text="------球网------------球网------")\
@@ -707,107 +633,107 @@ class CollectDataWindow():
                 # line 8 ========================
         court_l8 = ttk.Frame(group_court)
         court_l8.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l8, text="42", command=court_down42, width=3, bg="green")\
+        tk.Button(court_l8, text="42", command=lambda: court("down", 42), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l8, text="22", command=court_down22, width=3, bg="deepskyblue")\
+        tk.Button(court_l8, text="22", command=lambda: court("down", 22), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l8, text="21", command=court_down21, width=3, bg="deepskyblue")\
+        tk.Button(court_l8, text="21", command=lambda: court("down", 21), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l8, text="20", command=court_down20, width=3, bg="deepskyblue")\
+        tk.Button(court_l8, text="20", command=lambda: court("down", 20), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l8, text="19", command=court_down19, width=3, bg="deepskyblue")\
+        tk.Button(court_l8, text="19", command=lambda: court("down", 19), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l8, text="41", command=court_down41, width=3, bg="green")\
+        tk.Button(court_l8, text="41", command=lambda: court("down", 41), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 9 ========================
         court_l9 = ttk.Frame(group_court)
         court_l9.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l9, text="40", command=court_down40, width=3, bg="green")\
+        tk.Button(court_l9, text="40", command=lambda: court("down", 40), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l9, text="18", command=court_down18, width=3, bg="deepskyblue")\
+        tk.Button(court_l9, text="18", command=lambda: court("down", 18), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l9, text="17", command=court_down17, width=3, bg="deepskyblue")\
+        tk.Button(court_l9, text="17", command=lambda: court("down", 17), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l9, text="16", command=court_down16, width=3, bg="deepskyblue")\
+        tk.Button(court_l9, text="16", command=lambda: court("down", 16), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l9, text="15", command=court_down15, width=3, bg="deepskyblue")\
+        tk.Button(court_l9, text="15", command=lambda: court("down", 15), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l9, text="39", command=court_down39, width=3, bg="green")\
+        tk.Button(court_l9, text="39", command=lambda: court("down", 39), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 10 ========================
         court_l10 = ttk.Frame(group_court)
         court_l10.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l10, text="6", command=court_down6, width=3, bg="cadetblue")\
+        tk.Button(court_l10, text="6", command=lambda: court("down", 6), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l10, text="5", command=court_down5, width=3, bg="cadetblue")\
+        tk.Button(court_l10, text="5", command=lambda: court("down", 5), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l10, text="4", command=court_down4, width=3, bg="cadetblue")\
+        tk.Button(court_l10, text="4", command=lambda: court("down", 4), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l10, text="3", command=court_down3, width=3, bg="cadetblue")\
+        tk.Button(court_l10, text="3", command=lambda: court("down", 3), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l10, text="2", command=court_down2, width=3, bg="cadetblue")\
+        tk.Button(court_l10, text="2", command=lambda: court("down", 2), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l10, text="1", command=court_down1, width=3, bg="cadetblue")\
+        tk.Button(court_l10, text="1", command=lambda: court("down", 1), width=3, bg="cadetblue")\
             .pack(side="left", expand=1, anchor="center")
         # line 11 ========================
         court_l11 = ttk.Frame(group_court)
         court_l11.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l11, text="38", command=court_down38, width=3, bg="green")\
+        tk.Button(court_l11, text="38", command=lambda: court("down", 38), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l11, text="14", command=court_down14, width=3, bg="deepskyblue")\
+        tk.Button(court_l11, text="14", command=lambda: court("down", 14), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l11, text="13", command=court_down13, width=3, bg="deepskyblue")\
+        tk.Button(court_l11, text="13", command=lambda: court("down", 13), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l11, text="12", command=court_down12, width=3, bg="deepskyblue")\
+        tk.Button(court_l11, text="12", command=lambda: court("down", 12), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l11, text="11", command=court_down11, width=3, bg="deepskyblue")\
+        tk.Button(court_l11, text="11", command=lambda: court("down", 11), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l11, text="37", command=court_down37, width=3, bg="green")\
+        tk.Button(court_l11, text="37", command=lambda: court("down", 37), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 12 ========================
         court_l12 = ttk.Frame(group_court)
         court_l12.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l12, text="36", command=court_down36, width=3, bg="green")\
+        tk.Button(court_l12, text="36", command=lambda: court("down", 36), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l12, text="10", command=court_down10, width=3, bg="deepskyblue")\
+        tk.Button(court_l12, text="10", command=lambda: court("down", 10), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l12, text="9", command=court_down9, width=3, bg="deepskyblue")\
+        tk.Button(court_l12, text="9", command=lambda: court("down", 9), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l12, text="8", command=court_down8, width=3, bg="deepskyblue")\
+        tk.Button(court_l12, text="8", command=lambda: court("down", 8), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l12, text="7", command=court_down7, width=3, bg="deepskyblue")\
+        tk.Button(court_l12, text="7", command=lambda: court("down", 7), width=3, bg="deepskyblue")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l12, text="35", command=court_down35, width=3, bg="green")\
+        tk.Button(court_l12, text="35", command=lambda: court("down", 35), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 13 ========================
         court_l13 = ttk.Frame(group_court)
         court_l13.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l13, text="34", command=court_down34, width=3, bg="green")\
+        tk.Button(court_l13, text="34", command=lambda: court("down", 34), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l13, text="26", command=court_down26, width=3, bg="green")\
+        tk.Button(court_l13, text="26", command=lambda: court("down", 26), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l13, text="25", command=court_down25, width=3, bg="green")\
+        tk.Button(court_l13, text="25", command=lambda: court("down", 25), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l13, text="24", command=court_down24, width=3, bg="green")\
+        tk.Button(court_l13, text="24", command=lambda: court("down", 24), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l13, text="23", command=court_down23, width=3, bg="green")\
+        tk.Button(court_l13, text="23", command=lambda: court("down", 23), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l13, text="33", command=court_down33, width=3, bg="green")\
+        tk.Button(court_l13, text="33", command=lambda: court("down", 33), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # line 14 ========================
         court_l14 = ttk.Frame(group_court)
         court_l14.pack(side="top", expand=1, anchor="center")
-        tk.Button(court_l14, text="32", command=court_down32, width=3, bg="green")\
+        tk.Button(court_l14, text="32", command=lambda: court("down", 32), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l14, text="30", command=court_down30, width=3, bg="green")\
+        tk.Button(court_l14, text="30", command=lambda: court("down", 30), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l14, text="29", command=court_down29, width=3, bg="green")\
+        tk.Button(court_l14, text="29", command=lambda: court("down", 29), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l14, text="28", command=court_down28, width=3, bg="green")\
+        tk.Button(court_l14, text="28", command=lambda: court("down", 28), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l14, text="27", command=court_down27, width=3, bg="green")\
+        tk.Button(court_l14, text="27", command=lambda: court("down", 27), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
-        tk.Button(court_l14, text="31", command=court_down31, width=3, bg="green")\
+        tk.Button(court_l14, text="31", command=lambda: court("down", 31), width=3, bg="green")\
             .pack(side="left", expand=1, anchor="center")
         # ~~~~~~~~~~~~~
         # technique & state choice
@@ -820,51 +746,51 @@ class CollectDataWindow():
         # line 1 ========================
         tech_l1 = ttk.Frame(group_tech)
         tech_l1.pack(side="top", expand=1, anchor="center")
-        ttk.Button(tech_l1, text="1  一区一发", command=tech1, width=10)\
+        ttk.Button(tech_l1, text="1  一区一发", command=lambda: tech(1), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(tech_l1, text="2  一区二发", command=tech2, width=10)\
+        ttk.Button(tech_l1, text="2  一区二发", command=lambda: tech(2), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 2 ========================
         tech_l2 = ttk.Frame(group_tech)
         tech_l2.pack(side="top", expand=1, anchor="center")
-        ttk.Button(tech_l2, text="3  二区一发", command=tech3, width=10)\
+        ttk.Button(tech_l2, text="3  二区一发", command=lambda: tech(3), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(tech_l2, text="4  二区二发", command=tech4, width=10)\
+        ttk.Button(tech_l2, text="4  二区二发", command=lambda: tech(4), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 3 ========================
         tech_l3 = ttk.Frame(group_tech)
         tech_l3.pack(side="top", expand=1, anchor="center")
-        ttk.Button(tech_l3, text="5  正手抽击", command=tech5, width=10)\
+        ttk.Button(tech_l3, text="5  正手抽击", command=lambda: tech(5), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(tech_l3, text="6  反手抽击", command=tech6, width=10)\
+        ttk.Button(tech_l3, text="6  反手抽击", command=lambda: tech(6), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 4 ========================
         tech_l4 = ttk.Frame(group_tech)
         tech_l4.pack(side="top", expand=1, anchor="center")
-        ttk.Button(tech_l4, text="7  正手截击", command=tech7, width=10)\
+        ttk.Button(tech_l4, text="7  正手截击", command=lambda: tech(7), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(tech_l4, text="8  反手截击", command=tech8, width=10)\
+        ttk.Button(tech_l4, text="8  反手截击", command=lambda: tech(8), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 5 ========================
         tech_l5 = ttk.Frame(group_tech)
         tech_l5.pack(side="top", expand=1, anchor="center")
-        ttk.Button(tech_l5, text="9  高压球  ", command=tech9, width=10)\
+        ttk.Button(tech_l5, text="9  高压球  ", command=lambda: tech(9), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(tech_l5, text="10 削球    ", command=tech10, width=10)\
+        ttk.Button(tech_l5, text="10 削球    ", command=lambda: tech(10), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 6 ========================
         tech_l6 = ttk.Frame(group_tech)
         tech_l6.pack(side="top", expand=1, anchor="center")
-        ttk.Button(tech_l6, text="11 挑高球  ", command=tech11, width=10)\
+        ttk.Button(tech_l6, text="11 挑高球  ", command=lambda: tech(11), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(tech_l6, text="12 放小球  ", command=tech12, width=10)\
+        ttk.Button(tech_l6, text="12 放小球  ", command=lambda: tech(12), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 7 ========================
         tech_l7 = ttk.Frame(group_tech)
         tech_l7.pack(side="top", expand=1, anchor="center")
-        ttk.Button(tech_l7, text="13 推挡    ", command=tech13, width=10)\
+        ttk.Button(tech_l7, text="13 推挡    ", command=lambda: tech(13), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(tech_l7, text="0  无技术  ", command=tech14, width=10)\
+        ttk.Button(tech_l7, text="0  无技术  ", command=lambda: tech(0), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # state choice
         group_state = ttk.LabelFrame(group_choice, text="状态")
@@ -872,30 +798,30 @@ class CollectDataWindow():
         # line 1 ========================
         state_l1 = ttk.Frame(group_state)
         state_l1.pack(side="top", expand=1, anchor="center")
-        ttk.Button(state_l1, text="1 界内有效", command=state1, width=10)\
+        ttk.Button(state_l1, text="1 界内有效", command=lambda: state(1), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(state_l1, text="2 出界球  ", command=state2, width=10)\
+        ttk.Button(state_l1, text="2 出界球  ", command=lambda: state(2), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 2 ========================
         state_l2 = ttk.Frame(group_state)
         state_l2.pack(side="top", expand=1, anchor="center")
-        ttk.Button(state_l2, text="3 下网球  ", command=state3, width=10)\
+        ttk.Button(state_l2, text="3 下网球  ", command=lambda: state(3), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(state_l2, text="4 擦网球  ", command=state4, width=10)\
+        ttk.Button(state_l2, text="4 擦网球  ", command=lambda: state(4), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 3 ========================
         state_l3 = ttk.Frame(group_state)
         state_l3.pack(side="top", expand=1, anchor="center")
-        ttk.Button(state_l3, text="5 被拦网  ", command=state5, width=10)\
+        ttk.Button(state_l3, text="5 被拦网  ", command=lambda: state(5), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(state_l3, text="6 未过网  ", command=state6, width=10)\
+        ttk.Button(state_l3, text="6 未过网  ", command=lambda: state(6), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # line 4 ========================
         state_l4 = ttk.Frame(group_state)
         state_l4.pack(side="top", expand=1, anchor="center")
-        ttk.Button(state_l4, text="7 被穿越  ", command=state7, width=10)\
+        ttk.Button(state_l4, text="7 被穿越  ", command=lambda: state(7), width=10)\
             .pack(side="left", expand=1, anchor="center")
-        ttk.Button(state_l4, text="8 界内无效", command=state8, width=10)\
+        ttk.Button(state_l4, text="8 界内无效", command=lambda: state(8), width=10)\
             .pack(side="right", expand=1, anchor="center")
         # ~~~~~~~~~~~~~
         # winner
@@ -910,7 +836,7 @@ class CollectDataWindow():
         # ~~~~~~~~~~~~~
         # next ball
         # ~~~~~~~~~~~~~
-        ttk.Button(group_choice, text="下一分", command=button_next)\
+        ttk.Button(group_choice, text="下一拍/球", command=button_next)\
             .pack(side="bottom", expand=1, anchor="center", pady=5)
 
         # ----------------------------------------
