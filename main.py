@@ -66,7 +66,6 @@ class NewMatchWindow():
             else:
                 self.window.destroy()
                 CollectDataWindow(m, p1, p2, p1_h, p2_h, self.top).window.mainloop()
-                # CollectDataWindow(m, p1, p2, p1_h, p2_h).window.mainloop()
 
         # ====================================================================
         # widget
@@ -147,7 +146,6 @@ class CollectDataWindow():
         self.p2_hand = player2_hand
 
         self.window = tk.Toplevel(top)
-        # self.window = tk.Tk()
         self.window.title("数据采集")
         self.window.geometry("500x700")
         self.window.iconbitmap("tennis.ico")
@@ -849,5 +847,3 @@ class CollectDataWindow():
 if __name__ == "__main__":
     win = MainWindow()
     win.window.mainloop()
-    # test = CollectDataWindow("ATP1000", "Federer", "Nadal", "right", "left")
-    # test.window.mainloop()
