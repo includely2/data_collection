@@ -147,12 +147,12 @@ class CollectDataWindow():
 
         self.window = tk.Toplevel(top)
         self.window.title("数据采集")
-        self.window.geometry("500x700")
+        self.window.geometry("1050x700")
         self.window.iconbitmap("tennis.ico")
-        self.window.resizable(0,0)
-        self.body()
+        # self.window.resizable(0,0)
 
-        self.data = pd.DataFrame(columns=["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"])
+        self.col_name = ["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"]
+        self.data = pd.DataFrame(columns=self.col_name)
         self.data_len = len(self.data.columns)
         self.point = np.zeros((1, self.data_len), dtype=int)
 
@@ -165,6 +165,8 @@ class CollectDataWindow():
         self.game2 = 0
         self.set1 = 0
         self.set2 = 0
+
+        self.body()
 
     def body(self):
         data_dict = {"set": 0,  # 盘
@@ -240,7 +242,7 @@ class CollectDataWindow():
         # ----------------------------------------
         def set_plus(player):
             # write self.point
-            self.point[-1][data_dict["set"]] += 1
+            self.set = self.point[-1][data_dict["set"]]
             self.point[-1][data_dict["set"+str(player)]] += 1
             self.point[-1][data_dict["game1"]] = 0
             self.point[-1][data_dict["game2"]] = 0
@@ -251,7 +253,7 @@ class CollectDataWindow():
 
         def game_plus(player):
             # write self.point
-            self.point[-1][data_dict["game"]] += 1
+            self.game = self.point[-1][data_dict["game"]]
             self.point[-1][data_dict["game"+str(player)]] += 1
             self.point[-1][data_dict["score1"]] = 0
             self.point[-1][data_dict["score2"]] = 0
@@ -280,7 +282,7 @@ class CollectDataWindow():
 
         def score_plus(player):
             # write self.point
-            self.point[-1][data_dict["score"]] += 1
+            self.score = self.point[-1][data_dict["score"]]
             self.point[-1][data_dict["score"+str(player)]] += 1
             # update score board
             score = score_p1 if player == 1 else score_p2
@@ -349,9 +351,6 @@ class CollectDataWindow():
                 server.set("")
                 winner.set("")
                 # write self.point
-                self.set = self.point[-1][data_dict["set"]]
-                self.game = self.point[-1][data_dict["game"]]
-                self.score = self.point[-1][data_dict["score"]]
                 self.score1 = self.point[-1][data_dict["score1"]]
                 self.score2 = self.point[-1][data_dict["score2"]]
                 self.game1 = self.point[-1][data_dict["game1"]]
@@ -360,14 +359,19 @@ class CollectDataWindow():
                 self.set2 = self.point[-1][data_dict["set2"]]
                 for i in range(len(self.point)):
                     self.point[i][data_dict["winner"]] = player
+                    data_value = []
+                    for j in range(len(self.col_name)):
+                        data_value.append(self.point[i][j])
+                    table.insert("", "end", values=data_value)
+                # write csv
                 point = pd.DataFrame(self.point, columns=["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"])
                 self.data = self.data.append(point, ignore_index=True)
                 self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '-p2_' + self.p2_name + '.csv', index=False, sep=',')
 
                 self.point = np.zeros((1, self.data_len), dtype=int)
-                self.point[0][data_dict["set"]] = self.set
-                self.point[0][data_dict["game"]] = self.game
-                self.point[0][data_dict["score"]] = self.score
+                self.point[0][data_dict["set"]] = self.set + 1
+                self.point[0][data_dict["game"]] = self.game + 1
+                self.point[0][data_dict["score"]] = self.score + 1
                 self.point[0][data_dict["rally"]] = 1
                 self.point[0][data_dict["score1"]] = self.score1
                 self.point[0][data_dict["score2"]] = self.score2
@@ -387,13 +391,18 @@ class CollectDataWindow():
         # ====================================================================
         # widget
         # ====================================================================
+        # ========================================
+        # left widget: data collection
+        # ========================================
+        group_left = ttk.Frame(self.window)
+        group_left.pack(side="left", expand=1, anchor="center", fill="y")
         # ----------------------------------------
         # match
         # ----------------------------------------
-        ttk.Label(self.window, text="比赛名称：" + self.m_name)\
+        ttk.Label(group_left, text="比赛名称：" + self.m_name)\
             .pack(side="top", expand=1, anchor="center", fill="x", padx=5)
 
-        group_up = ttk.Frame(self.window)
+        group_up = ttk.Frame(group_left)
         group_up.pack(side="top", expand=1, anchor="center", fill="x")
         # ----------------------------------------
         # info
@@ -498,7 +507,7 @@ class CollectDataWindow():
         # ----------------------------------------
         # date collection
         # ----------------------------------------
-        group_data = ttk.Frame(self.window)
+        group_data = ttk.Frame(group_left)
         group_data.pack(side="top", expand=1, anchor="center")
         # ~~~~~~~~~~~~~
         # change court
@@ -840,8 +849,27 @@ class CollectDataWindow():
         # ----------------------------------------
         # export data
         # ----------------------------------------
-        ttk.Button(self.window, text="导出数据", command=button_export, width=10)\
+        ttk.Button(group_left, text="导出数据", command=button_export, width=10)\
             .pack(side="bottom", expand=1, anchor="center")
+
+        # ========================================
+        # right widget: preview table
+        # ========================================
+        group_right = ttk.LabelFrame(self.window, text="已录入数据预览")
+        group_right.pack(side="right", expand=1, anchor="center", padx=5, pady=5)
+        table = ttk.Treeview(group_right, columns=self.col_name, show="headings", height=30)
+        for i in range(len(self.col_name)):
+            table.column(self.col_name[i], width=50, anchor="center")
+            table.heading(self.col_name[i], text=self.col_name[i])
+
+        table_y = ttk.Scrollbar(group_right, orient="vertical", command=table.yview)
+        table_y.pack(side="right", fill="y")
+        table.config(yscrollcommand=table_y.set)
+        # table_x = ttk.Scrollbar(group_right, orient="horizontal", command=table.xview)
+        # table_x.pack(side="bottom", fill="x")
+        # table.config(yscrollcommand=table_x.set)
+        table.pack(side="left", expand=1, anchor="center")
+        
 
 
 if __name__ == "__main__":
