@@ -865,9 +865,7 @@ class CollectDataWindow():
         table_y = ttk.Scrollbar(group_right, orient="vertical", command=table.yview)
         table_y.pack(side="right", fill="y")
         table.config(yscrollcommand=table_y.set)
-        # table_x = ttk.Scrollbar(group_right, orient="horizontal", command=table.xview)
-        # table_x.pack(side="bottom", fill="x")
-        # table.config(yscrollcommand=table_x.set)
+        
         table.pack(side="left", expand=1, anchor="center")
         
 
