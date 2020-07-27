@@ -2,3 +2,5 @@
 *.ipynb
 *.csv
 *.zip
+*.docx
+test.py
