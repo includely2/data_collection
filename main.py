@@ -77,7 +77,7 @@ class NewMatchWindow():
                 msg.showerror(title="错误", message="请选择球员惯用手")
             else:
                 self.window.destroy()
-                CollectDataWindow(m, p1, p2, p1_h, p2_h, self.top).window.mainloop()
+                CollectDataWindow(m, p1, p2, p1_h, p2_h, self.top, False).window.mainloop()
 
         # ====================================================================
         # widget
@@ -157,6 +157,9 @@ class OpenMatchWindow():
         self.window.geometry("450x75")
         self.window.iconbitmap("tennis.ico")
         self.window.resizable(0,0)
+
+        self.file = ""
+
         self.body()
 
     def body(self):
@@ -165,11 +168,21 @@ class OpenMatchWindow():
         # ====================================================================
         def button_browse():
             default_dir = abspath(dirname(__file__))
-            file_path = tf.askopenfilename(title="选择文件", initialdir=(default_dir))
-            tk_file_path.set(file_path)
+            self.file = tf.askopenfilename(title="选择文件", initialdir=(default_dir))
+            file_path.set(self.file)
+            print(self.file)
 
         def button_collect():
-            self.window.destroy()
+            if self.file == "":
+                msg.showerror("错误", message="请选择文件!")
+            else:
+                self.window.destroy()
+                pd_data = pd.read_csv(self.file, sep=',')
+                [m, p1, p2] = self.file.split('/')[-1].split('.')[0].split('-')
+                [temp, p1_name, p1_hand] = p1.split('_')
+                [temp, p2_name, p2_hand] = p2.split('_')
+                CollectDataWindow(m, p1_name, p2_name, p1_hand, p2_hand, self.top, True, pd_data).window.mainloop()
+                
             
         # ====================================================================
         # widget
@@ -182,10 +195,8 @@ class OpenMatchWindow():
         # ~~~~~~~~~~~~~
         # file path
         # ~~~~~~~~~~~~~
-        tk_file_path = tk.StringVar()
-        # tk.Label(group_file, textvariable=tk_file_path, width=40, bg="white")\
-        #     .pack(side="left", expand=1, anchor="center")
-        entry_file = ttk.Entry(group_file, textvariable=tk_file_path, show=None, width=50)
+        file_path = tk.StringVar()
+        entry_file = ttk.Entry(group_file, textvariable=file_path, show=None, width=50)
         entry_file.pack(side="left", expand=1, anchor="center", padx=5)
         # ~~~~~~~~~~~~~
         # browse
@@ -201,7 +212,7 @@ class OpenMatchWindow():
 
 
 class CollectDataWindow():
-    def __init__(self, match_name, player1_name, player2_name, player1_hand, player2_hand, top):
+    def __init__(self, match_name, player1_name, player2_name, player1_hand, player2_hand, top, is_read=False, dataframe=None):
         self.m_name = match_name
         self.p1_name = player1_name
         self.p2_name = player2_name
@@ -215,7 +226,10 @@ class CollectDataWindow():
         # self.window.resizable(0,0)
 
         self.col_name = ["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"]
-        self.data = pd.DataFrame(columns=self.col_name)
+        if is_read == False:
+            self.data = pd.DataFrame(columns=self.col_name)
+        else:
+            self.data = dataframe
         self.data_len = len(self.data.columns)
         self.point = np.zeros((1, self.data_len), dtype=int)
 
@@ -429,7 +443,7 @@ class CollectDataWindow():
                 # write csv
                 point = pd.DataFrame(self.point, columns=["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"])
                 self.data = self.data.append(point, ignore_index=True)
-                self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '-p2_' + self.p2_name + '.csv', index=False, sep=',')
+                self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '_' + self.p1_hand + '-p2_' + self.p2_name + '_' + self.p2_hand +'.csv', index=False, sep=',')
 
                 self.point = np.zeros((1, self.data_len), dtype=int)
                 self.point[0][data_dict["set"]] = self.set + 1
@@ -447,7 +461,7 @@ class CollectDataWindow():
         # export data
         # ----------------------------------------
         def button_export():
-            self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '-p2_' + self.p2_name + '.csv', index=False, sep=',')
+            self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '_' + self.p1_hand + '-p2_' + self.p2_name + '_' + self.p2_hand + '.csv', index=False, sep=',')
             msg.showinfo(title="提示", message="数据导出成功！")
             self.window.destroy()
         
