@@ -1,9 +1,12 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.messagebox as msg
+import tkinter.filedialog as tf
 import pandas as pd
 import numpy as np
 import time
+from os.path import abspath, join, dirname
+
 
 class MainWindow():
     def __init__(self):
@@ -21,6 +24,9 @@ class MainWindow():
         def button_new():
             NewMatchWindow(self.window)
 
+        def button_open():
+            OpenMatchWindow(self.window)
+
         # ====================================================================
         # widget
         # ====================================================================
@@ -28,6 +34,12 @@ class MainWindow():
         # new match
         # ----------------------------------------
         ttk.Button(self.window, text="新建比赛", command=button_new, width=10)\
+            .pack(side="left", expand=1, anchor="center", padx=5)
+
+        # ----------------------------------------
+        # read match
+        # ----------------------------------------
+        ttk.Button(self.window, text="打开文件", command=button_open, width=10)\
             .pack(side="left", expand=1, anchor="center", padx=5)
 
         # ----------------------------------------
@@ -42,7 +54,7 @@ class NewMatchWindow():
         self.top = top
         self.window = tk.Toplevel(top)
         self.window.title("新建比赛")
-        self.window.geometry("300x200")
+        self.window.geometry("300x250")
         self.window.iconbitmap("tennis.ico")
         self.window.resizable(0,0)
         self.body()
@@ -74,7 +86,7 @@ class NewMatchWindow():
         # match name
         # ----------------------------------------
         group_match_name = ttk.Frame(self.window)
-        group_match_name.pack(side="top", expand=1, anchor="center")
+        group_match_name.pack(side="top", expand=1, anchor="center", pady=5)
         ttk.Label(group_match_name, text="比赛名称：")\
             .pack(side="left", expand=1, anchor="center", padx=5)
         entry_match_name = ttk.Entry(group_match_name, show=None)
@@ -84,7 +96,7 @@ class NewMatchWindow():
         # player1
         # ----------------------------------------
         group_p1 = ttk.LabelFrame(self.window, text="球员1")
-        group_p1.pack(side="top", expand=1, anchor="center")
+        group_p1.pack(side="top", expand=1, anchor="center", pady=5)
         # ~~~~~~~~~~~~~
         # player1 name
         # ~~~~~~~~~~~~~
@@ -109,7 +121,7 @@ class NewMatchWindow():
         # player2
         # ----------------------------------------
         group_p2 = ttk.LabelFrame(self.window, text="球员2")
-        group_p2.pack(side="top", expand=1, anchor="center")
+        group_p2.pack(side="top", expand=1, anchor="center", pady=5)
         # ~~~~~~~~~~~~~
         # player2 name
         # ~~~~~~~~~~~~~
@@ -134,7 +146,58 @@ class NewMatchWindow():
         # collect data
         # ----------------------------------------
         ttk.Button(self.window, text="开始采集", command=button_collect, width=10)\
-            .pack(side="top", expand=1, anchor="center")
+            .pack(side="top", expand=1, anchor="center", pady=5)
+
+
+class OpenMatchWindow():
+    def __init__(self, top):
+        self.top = top
+        self.window = tk.Toplevel(top)
+        self.window.title("打开文件")
+        self.window.geometry("450x75")
+        self.window.iconbitmap("tennis.ico")
+        self.window.resizable(0,0)
+        self.body()
+
+    def body(self):
+        # ====================================================================
+        # command
+        # ====================================================================
+        def button_browse():
+            default_dir = abspath(dirname(__file__))
+            file_path = tf.askopenfilename(title="选择文件", initialdir=(default_dir))
+            tk_file_path.set(file_path)
+
+        def button_collect():
+            self.window.destroy()
+            
+        # ====================================================================
+        # widget
+        # ====================================================================
+        # ----------------------------------------
+        # choose file
+        # ----------------------------------------
+        group_file = ttk.Frame(self.window)
+        group_file.pack(side="top", expand=1, anchor="center", pady=5)
+        # ~~~~~~~~~~~~~
+        # file path
+        # ~~~~~~~~~~~~~
+        tk_file_path = tk.StringVar()
+        # tk.Label(group_file, textvariable=tk_file_path, width=40, bg="white")\
+        #     .pack(side="left", expand=1, anchor="center")
+        entry_file = ttk.Entry(group_file, textvariable=tk_file_path, show=None, width=50)
+        entry_file.pack(side="left", expand=1, anchor="center", padx=5)
+        # ~~~~~~~~~~~~~
+        # browse
+        # ~~~~~~~~~~~~~
+        ttk.Button(group_file, text="浏览文件", command=button_browse, width=10)\
+            .pack(side="right", expand=1, anchor="center", padx=5)
+
+        # ----------------------------------------
+        # collect data
+        # ----------------------------------------
+        ttk.Button(self.window, text="开始采集", command=button_collect, width=10)\
+            .pack(side="bottom", expand=1, anchor="center", pady=5)
 
 
 class CollectDataWindow():
