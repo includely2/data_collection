@@ -5,7 +5,7 @@ import tkinter.filedialog as tf
 import pandas as pd
 import numpy as np
 import time
-from os.path import abspath, join, dirname
+from os.path import abspath, dirname
 
 
 class MainWindow():
@@ -159,7 +159,6 @@ class OpenMatchWindow():
         self.window.resizable(0,0)
 
         self.file = ""
-
         self.body()
 
     def body(self):
@@ -170,7 +169,6 @@ class OpenMatchWindow():
             default_dir = abspath(dirname(__file__))
             self.file = tf.askopenfilename(title="选择文件", initialdir=(default_dir))
             file_path.set(self.file)
-            print(self.file)
 
         def button_collect():
             if self.file == "":
@@ -276,7 +274,7 @@ class CollectDataWindow():
                 game_p2.set("0")
                 score_p1.set("0")
                 score_p2.set("0")
-                # update data
+                # update self.point
                 self.point[0][data_dict["set"]] = 1
                 self.point[0][data_dict["game"]] = 1
                 self.point[0][data_dict["score"]] = 1
@@ -297,7 +295,7 @@ class CollectDataWindow():
                         tmp_score.set("30")
                     elif self.data.iloc[-1][data_dict["score" + i]] == 3:
                         tmp_score.set("40")
-                # update data
+                # update self.point
                 if self.data.iloc[-1][data_dict["game1"]] == 0 and \
                     self.data.iloc[-1][data_dict["game2"]] == 0 and \
                     self.data.iloc[-1][data_dict["set1"]] != 0 and \
@@ -403,7 +401,6 @@ class CollectDataWindow():
             else:
                 game.set(str(g_value + 1))
 
-
         def score_plus(player):
             # write self.point
             self.score = self.point[-1][data_dict["score"]]
@@ -491,7 +488,7 @@ class CollectDataWindow():
                 point = pd.DataFrame(self.point, columns=["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"])
                 self.data = self.data.append(point, ignore_index=True)
                 self.data.to_csv(self.m_name + '-p1_' + self.p1_name + '_' + self.p1_hand + '-p2_' + self.p2_name + '_' + self.p2_hand +'.csv', index=False, sep=',')
-
+                # update self.point
                 self.point = np.zeros((1, self.data_len), dtype=int)
                 self.point[0][data_dict["set"]] = self.set + 1
                 self.point[0][data_dict["game"]] = self.game + 1
@@ -992,7 +989,6 @@ class CollectDataWindow():
         
         table.pack(side="left", expand=1, anchor="center")
         
-
 
 if __name__ == "__main__":
     win = MainWindow()
