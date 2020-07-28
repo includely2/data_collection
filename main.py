@@ -182,7 +182,6 @@ class OpenMatchWindow():
                 [temp, p1_name, p1_hand] = p1.split('_')
                 [temp, p2_name, p2_hand] = p2.split('_')
                 CollectDataWindow(m, p1_name, p2_name, p1_hand, p2_hand, self.top, True, pd_data).window.mainloop()
-                
             
         # ====================================================================
         # widget
@@ -226,6 +225,7 @@ class CollectDataWindow():
         # self.window.resizable(0,0)
 
         self.col_name = ["盘", "局", "分", "球", "球员", "站位", "技术", "落点", "状态", "效果", "分1", "分2", "局1", "局2", "盘1", "盘2"]
+        self.is_read = is_read
         if is_read == False:
             self.data = pd.DataFrame(columns=self.col_name)
         else:
@@ -267,16 +267,63 @@ class CollectDataWindow():
         # command
         # ====================================================================
         def button_begin():
-            set_p1.set("0")
-            set_p2.set("0")
-            game_p1.set("0")
-            game_p2.set("0")
-            score_p1.set("0")
-            score_p2.set("0")
-            self.point[0][data_dict["set"]] = 1
-            self.point[0][data_dict["game"]] = 1
-            self.point[0][data_dict["score"]] = 1
-            self.point[0][data_dict["rally"]] = 1
+            begin.state(["disabled"])
+            if self.is_read == False:
+                # update score board
+                set_p1.set("0")
+                set_p2.set("0")
+                game_p1.set("0")
+                game_p2.set("0")
+                score_p1.set("0")
+                score_p2.set("0")
+                # update data
+                self.point[0][data_dict["set"]] = 1
+                self.point[0][data_dict["game"]] = 1
+                self.point[0][data_dict["score"]] = 1
+                self.point[0][data_dict["rally"]] = 1
+            else:
+                # update score board
+                set_p1.set(str(self.data.iloc[-1][data_dict["set1"]]))
+                set_p2.set(str(self.data.iloc[-1][data_dict["set2"]]))
+                game_p1.set(str(self.data.iloc[-1][data_dict["game1"]]))
+                game_p2.set(str(self.data.iloc[-1][data_dict["game2"]]))
+                for i in ["1", "2"]:
+                    tmp_score = eval("score_p" + i)
+                    if self.data.iloc[-1][data_dict["score" + i]] == 0:    
+                        tmp_score.set("0")
+                    elif self.data.iloc[-1][data_dict["score" + i]] == 1:
+                        tmp_score.set("15")
+                    elif self.data.iloc[-1][data_dict["score" + i]] == 2:
+                        tmp_score.set("30")
+                    elif self.data.iloc[-1][data_dict["score" + i]] == 3:
+                        tmp_score.set("40")
+                # update data
+                if self.data.iloc[-1][data_dict["game1"]] == 0 and \
+                    self.data.iloc[-1][data_dict["game2"]] == 0 and \
+                    self.data.iloc[-1][data_dict["set1"]] != 0 and \
+                    self.data.iloc[-1][data_dict["set2"]] != 0:
+                    self.point[0][data_dict["set"]] = self.data.iloc[-1][data_dict["set"]] + 1
+                else:
+                    self.point[0][data_dict["set"]] = self.data.iloc[-1][data_dict["set"]]
+                
+                if self.data.iloc[-1][data_dict["score1"]] == 0 and \
+                    self.data.iloc[-1][data_dict["score2"]] == 0:
+                    self.point[0][data_dict["game"]] = self.data.iloc[-1][data_dict["game"]] + 1
+                else:
+                    self.point[0][data_dict["game"]] = self.data.iloc[-1][data_dict["game"]]
+                
+                self.point[0][data_dict["score"]] = self.data.iloc[-1][data_dict["score"]] + 1
+                self.point[0][data_dict["rally"]] = 1
+                self.point[0][data_dict["score1"]] = self.data.iloc[-1][data_dict["score1"]]
+                self.point[0][data_dict["score2"]] = self.data.iloc[-1][data_dict["score2"]]
+                self.point[0][data_dict["game1"]] = self.data.iloc[-1][data_dict["game1"]]
+                self.point[0][data_dict["game2"]] = self.data.iloc[-1][data_dict["game2"]]
+                self.point[0][data_dict["set1"]] = self.data.iloc[-1][data_dict["set1"]]
+                self.point[0][data_dict["set2"]] = self.data.iloc[-1][data_dict["set2"]]
+                # update data preview table
+                for i in range(len(self.data)):
+                    row = self.data.iloc[i].values.tolist()
+                    table.insert("", "end", values=row)
 
         def button_change():
             temp = p_up.get()
@@ -526,8 +573,8 @@ class CollectDataWindow():
         # ~~~~~~~~~~~~~
         # begin playing
         # ~~~~~~~~~~~~~
-        ttk.Button(group_score, text="开始比赛", command=button_begin, width=10)\
-            .pack(side="top", expand=1, anchor="center")
+        begin = ttk.Button(group_score, text="开始比赛", command=button_begin, width=10)
+        begin.pack(side="top", expand=1, anchor="center")
         # ~~~~~~~~~~~~~
         # score board
         # ~~~~~~~~~~~~~
