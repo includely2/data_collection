@@ -54,7 +54,7 @@ class NewMatchWindow():
         self.top = top
         self.window = tk.Toplevel(top)
         self.window.title("新建比赛")
-        self.window.geometry("300x250")
+        self.window.geometry("300x100")
         self.window.iconbitmap("tennis.ico")
         self.window.resizable(0,0)
         self.body()
@@ -65,19 +65,14 @@ class NewMatchWindow():
         # ====================================================================
         def button_collect():
             m = entry_match_name.get()
-            p1 = entry_p1_name.get()
-            p2 = entry_p2_name.get()
-            p1_h = p1_hand.get()
-            p2_h = p2_hand.get()
+            mt = match_type.get()
             if m == "":
                 msg.showerror(title="错误", message="请输入比赛名称！")
-            elif p1 == "" or p2 == "":
-                msg.showerror(title="错误", message="请输入球员姓名！")
-            elif p1_h == "" or p2_h == "":
-                msg.showerror(title="错误", message="请选择球员惯用手")
+            elif mt == "":
+                msg.showerror(title="错误", message="请选择比赛类型！")
             else:
                 self.window.destroy()
-                CollectDataWindow(m, p1, p2, p1_h, p2_h, self.top, False).window.mainloop()
+                NewPlayerWindow(m, mt, self.top).window.mainloop()
 
         # ====================================================================
         # widget
@@ -93,54 +88,237 @@ class NewMatchWindow():
         entry_match_name.pack(side="right", expand=1, anchor="center", padx=5)
 
         # ----------------------------------------
-        # player1
+        # match type
         # ----------------------------------------
-        group_p1 = ttk.LabelFrame(self.window, text="球员1")
-        group_p1.pack(side="top", expand=1, anchor="center", pady=5)
-        # ~~~~~~~~~~~~~
-        # player1 name
-        # ~~~~~~~~~~~~~
-        group_p1_name = ttk.Frame(group_p1)
-        group_p1_name.pack(side="top", expand=1, anchor="center")
-        ttk.Label(group_p1_name, text="姓名：")\
+        group_match_type = ttk.Frame(self.window)
+        group_match_type.pack(side="top", expand=1, anchor="center", pady=5)
+        match_type = tk.StringVar()
+        ttk.Radiobutton(group_match_type, text="单打", variable=match_type, value="single")\
             .pack(side="left", expand=1, anchor="center", padx=5)
-        entry_p1_name = ttk.Entry(group_p1_name, show=None)
-        entry_p1_name.pack(side="right", expand=1, anchor="center", padx=5)
-        # ~~~~~~~~~~~~~
-        # player1 hand
-        # ~~~~~~~~~~~~~
-        group_p1_hand = ttk.Frame(group_p1)
-        group_p1_hand.pack(side="top", expand=1, anchor="center")
-        p1_hand = tk.StringVar()
-        ttk.Radiobutton(group_p1_hand, text="左手", variable=p1_hand, value="left")\
-            .pack(side="left", expand=1, anchor="center", padx=5)
-        ttk.Radiobutton(group_p1_hand, text="右手", variable=p1_hand, value="right")\
+        ttk.Radiobutton(group_match_type, text="双打", variable=match_type, value="double")\
             .pack(side="right", expand=1, anchor="center", padx=5)
 
         # ----------------------------------------
-        # player2
+        # next step
         # ----------------------------------------
-        group_p2 = ttk.LabelFrame(self.window, text="球员2")
-        group_p2.pack(side="top", expand=1, anchor="center", pady=5)
-        # ~~~~~~~~~~~~~
-        # player2 name
-        # ~~~~~~~~~~~~~
-        group_p2_name = ttk.Frame(group_p2)
-        group_p2_name.pack(side="top", expand=1, anchor="center")
-        ttk.Label(group_p2_name, text="姓名：")\
-            .pack(side="left", expand=1, anchor="center", padx=5)
-        entry_p2_name = ttk.Entry(group_p2_name, show=None)
-        entry_p2_name.pack(side="right", expand=1, anchor="center", padx=5)
-        # ~~~~~~~~~~~~~
-        # player2 hand
-        # ~~~~~~~~~~~~~
-        group_p2_hand = ttk.Frame(group_p2)
-        group_p2_hand.pack(side="top", expand=1, anchor="center")
-        p2_hand = tk.StringVar()
-        ttk.Radiobutton(group_p2_hand, text="左手", variable=p2_hand, value="left")\
-            .pack(side="left", expand=1, anchor="center", padx=5)
-        ttk.Radiobutton(group_p2_hand, text="右手", variable=p2_hand, value="right")\
-            .pack(side="right", expand=1, anchor="center", padx=5)
+        ttk.Button(self.window, text="下一步", command=button_collect, width=10)\
+            .pack(side="top", expand=1, anchor="center", pady=5)
+
+
+class NewPlayerWindow():
+    def __init__(self, match_name, match_type, top):
+        self.m_name = match_name
+        self.m_type = 1 if match_type == "single" else 2
+
+        self.top = top
+        self.window = tk.Toplevel(top)
+        self.window.title("新建比赛")
+        if self.m_type == 1:
+            self.window.geometry("300x250")
+        elif self.m_type == 2:
+            self.window.geometry("600x250")
+        self.window.iconbitmap("tennis.ico")
+        self.window.resizable(0,0)
+        self.body()
+
+    def body(self):
+        # ====================================================================
+        # command
+        # ====================================================================
+        def button_collect():
+            if self.m_type == 1:
+                p1 = entry_p1_name.get()
+                p2 = entry_p2_name.get()
+                p1_h = p1_hand.get()
+                p2_h = p2_hand.get()
+                if p1 == "" or p2 == "":
+                    msg.showerror(title="错误", message="请输入球员姓名！")
+                elif p1_h == "" or p2_h == "":
+                    msg.showerror(title="错误", message="请选择球员惯用手")
+                else:
+                    self.window.destroy()
+                    CollectDataWindow(self.m_name, p1, p2, p1_h, p2_h, self.top, False).window.mainloop()
+            elif self.m_type == 2:
+                p1 = entry_p1_name.get()
+                p2 = entry_p2_name.get()
+                p3 = entry_p3_name.get()
+                p4 = entry_p4_name.get()
+                p1_h = p1_hand.get()
+                p2_h = p2_hand.get()
+                p3_h = p3_hand.get()
+                p4_h = p4_hand.get()
+                if p1 == "" or p2 == "" or p3 == "" or p4 == "":
+                    msg.showerror(title="错误", message="请输入球员姓名！")
+                elif p1_h == "" or p2_h == "" or p3_h == "" or p4_h == "":
+                    msg.showerror(title="错误", message="请选择球员惯用手")
+                else:
+                    self.window.destroy()
+                    CollectDataWindow(self.m_name, p1 + "+" + p2, p3 + "+" + p4, p1_h + "+" + p2_h, p3_h + "+" + p4_h, self.top, False).window.mainloop()
+
+        # ====================================================================
+        # widget
+        # ====================================================================
+        ttk.Label(self.window, text="比赛名称：" + self.m_name)\
+            .pack(side="top", expand=1, anchor="center", pady=5)
+        if self.m_type == 1:
+            # ----------------------------------------
+            # player1
+            # ----------------------------------------
+            group_p1 = ttk.LabelFrame(self.window, text="球员1")
+            group_p1.pack(side="top", expand=1, anchor="center", pady=5)
+            # ~~~~~~~~~~~~~
+            # player1 name
+            # ~~~~~~~~~~~~~
+            group_p1_name = ttk.Frame(group_p1)
+            group_p1_name.pack(side="top", expand=1, anchor="center")
+            ttk.Label(group_p1_name, text="姓名：")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            entry_p1_name = ttk.Entry(group_p1_name, show=None)
+            entry_p1_name.pack(side="right", expand=1, anchor="center", padx=5)
+            # ~~~~~~~~~~~~~
+            # player1 hand
+            # ~~~~~~~~~~~~~
+            group_p1_hand = ttk.Frame(group_p1)
+            group_p1_hand.pack(side="top", expand=1, anchor="center")
+            p1_hand = tk.StringVar()
+            ttk.Radiobutton(group_p1_hand, text="左手", variable=p1_hand, value="left")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            ttk.Radiobutton(group_p1_hand, text="右手", variable=p1_hand, value="right")\
+                .pack(side="right", expand=1, anchor="center", padx=5)
+
+            # ----------------------------------------
+            # player2
+            # ----------------------------------------
+            group_p2 = ttk.LabelFrame(self.window, text="球员2")
+            group_p2.pack(side="top", expand=1, anchor="center", pady=5)
+            # ~~~~~~~~~~~~~
+            # player2 name
+            # ~~~~~~~~~~~~~
+            group_p2_name = ttk.Frame(group_p2)
+            group_p2_name.pack(side="top", expand=1, anchor="center")
+            ttk.Label(group_p2_name, text="姓名：")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            entry_p2_name = ttk.Entry(group_p2_name, show=None)
+            entry_p2_name.pack(side="right", expand=1, anchor="center", padx=5)
+            # ~~~~~~~~~~~~~
+            # player2 hand
+            # ~~~~~~~~~~~~~
+            group_p2_hand = ttk.Frame(group_p2)
+            group_p2_hand.pack(side="top", expand=1, anchor="center")
+            p2_hand = tk.StringVar()
+            ttk.Radiobutton(group_p2_hand, text="左手", variable=p2_hand, value="left")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            ttk.Radiobutton(group_p2_hand, text="右手", variable=p2_hand, value="right")\
+                .pack(side="right", expand=1, anchor="center", padx=5)
+        elif self.m_type == 2:
+            # ---------------------------------------- #
+            # team A                                   #  
+            # ---------------------------------------- #
+            group_ta = ttk.LabelFrame(self.window, text="A队")
+            group_ta.pack(side="left", expand=1, anchor="center", pady=5)
+            # ----------------------------------------
+            # player1
+            # ----------------------------------------
+            group_p1 = ttk.LabelFrame(group_ta, text="球员1")
+            group_p1.pack(side="top", expand=1, anchor="center", pady=5)
+            # ~~~~~~~~~~~~~
+            # player1 name
+            # ~~~~~~~~~~~~~
+            group_p1_name = ttk.Frame(group_p1)
+            group_p1_name.pack(side="top", expand=1, anchor="center")
+            ttk.Label(group_p1_name, text="姓名：")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            entry_p1_name = ttk.Entry(group_p1_name, show=None)
+            entry_p1_name.pack(side="right", expand=1, anchor="center", padx=5)
+            # ~~~~~~~~~~~~~
+            # player1 hand
+            # ~~~~~~~~~~~~~
+            group_p1_hand = ttk.Frame(group_p1)
+            group_p1_hand.pack(side="top", expand=1, anchor="center")
+            p1_hand = tk.StringVar()
+            ttk.Radiobutton(group_p1_hand, text="左手", variable=p1_hand, value="left")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            ttk.Radiobutton(group_p1_hand, text="右手", variable=p1_hand, value="right")\
+                .pack(side="right", expand=1, anchor="center", padx=5)
+
+            # ----------------------------------------
+            # player2
+            # ----------------------------------------
+            group_p2 = ttk.LabelFrame(group_ta, text="球员2")
+            group_p2.pack(side="top", expand=1, anchor="center", pady=5)
+            # ~~~~~~~~~~~~~
+            # player2 name
+            # ~~~~~~~~~~~~~
+            group_p2_name = ttk.Frame(group_p2)
+            group_p2_name.pack(side="top", expand=1, anchor="center")
+            ttk.Label(group_p2_name, text="姓名：")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            entry_p2_name = ttk.Entry(group_p2_name, show=None)
+            entry_p2_name.pack(side="right", expand=1, anchor="center", padx=5)
+            # ~~~~~~~~~~~~~
+            # player2 hand
+            # ~~~~~~~~~~~~~
+            group_p2_hand = ttk.Frame(group_p2)
+            group_p2_hand.pack(side="top", expand=1, anchor="center")
+            p2_hand = tk.StringVar()
+            ttk.Radiobutton(group_p2_hand, text="左手", variable=p2_hand, value="left")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            ttk.Radiobutton(group_p2_hand, text="右手", variable=p2_hand, value="right")\
+                .pack(side="right", expand=1, anchor="center", padx=5)
+            # ---------------------------------------- #
+            # team B                                   # 
+            # ---------------------------------------- #
+            group_tb = ttk.LabelFrame(self.window, text="B队")
+            group_tb.pack(side="right", expand=1, anchor="center", pady=5)
+            # ----------------------------------------
+            # player3
+            # ----------------------------------------
+            group_p3 = ttk.LabelFrame(group_tb, text="球员3")
+            group_p3.pack(side="top", expand=1, anchor="center", pady=5)
+            # ~~~~~~~~~~~~~
+            # player3 name
+            # ~~~~~~~~~~~~~
+            group_p3_name = ttk.Frame(group_p3)
+            group_p3_name.pack(side="top", expand=1, anchor="center")
+            ttk.Label(group_p3_name, text="姓名：")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            entry_p3_name = ttk.Entry(group_p3_name, show=None)
+            entry_p3_name.pack(side="right", expand=1, anchor="center", padx=5)
+            # ~~~~~~~~~~~~~
+            # player3 hand
+            # ~~~~~~~~~~~~~
+            group_p3_hand = ttk.Frame(group_p3)
+            group_p3_hand.pack(side="top", expand=1, anchor="center")
+            p3_hand = tk.StringVar()
+            ttk.Radiobutton(group_p3_hand, text="左手", variable=p3_hand, value="left")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            ttk.Radiobutton(group_p3_hand, text="右手", variable=p3_hand, value="right")\
+                .pack(side="right", expand=1, anchor="center", padx=5)
+
+            # ----------------------------------------
+            # player4
+            # ----------------------------------------
+            group_p4 = ttk.LabelFrame(group_tb, text="球员2")
+            group_p4.pack(side="top", expand=1, anchor="center", pady=5)
+            # ~~~~~~~~~~~~~
+            # player4 name
+            # ~~~~~~~~~~~~~
+            group_p4_name = ttk.Frame(group_p4)
+            group_p4_name.pack(side="top", expand=1, anchor="center")
+            ttk.Label(group_p4_name, text="姓名：")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            entry_p4_name = ttk.Entry(group_p4_name, show=None)
+            entry_p4_name.pack(side="right", expand=1, anchor="center", padx=5)
+            # ~~~~~~~~~~~~~
+            # player4 hand
+            # ~~~~~~~~~~~~~
+            group_p4_hand = ttk.Frame(group_p4)
+            group_p4_hand.pack(side="top", expand=1, anchor="center")
+            p4_hand = tk.StringVar()
+            ttk.Radiobutton(group_p4_hand, text="左手", variable=p4_hand, value="left")\
+                .pack(side="left", expand=1, anchor="center", padx=5)
+            ttk.Radiobutton(group_p4_hand, text="右手", variable=p4_hand, value="right")\
+                .pack(side="right", expand=1, anchor="center", padx=5)
 
         # ----------------------------------------
         # collect data
@@ -538,17 +716,17 @@ class CollectDataWindow():
 
         group_p1 = ttk.Frame(group_p)
         group_p1.pack(side="top", expand=1, anchor="center", fill="x")
-        ttk.Label(group_p1, text="球员1：" + self.p1_name, width=15)\
+        ttk.Label(group_p1, text="球员1：" + self.p1_name, width=20)\
             .pack(side="left", expand=1, anchor="center", padx=5)
-        hand = "左手" if self.p1_hand == "left" else "右手"
+        hand = self.p1_hand.replace("left", "左手", 2).replace("right", "右手", 2)
         ttk.Label(group_p1, text="持拍手：" + hand)\
             .pack(side="right", expand=1, anchor="center", padx=5)
 
         group_p2 = ttk.Frame(group_p)
         group_p2.pack(side="top", expand=1, anchor="center", fill="x")
-        ttk.Label(group_p2, text="球员2：" + self.p2_name, width=15)\
+        ttk.Label(group_p2, text="球员2：" + self.p2_name, width=20)\
             .pack(side="left", expand=1, anchor="center", padx=5)
-        hand = "左手" if self.p2_hand == "left" else "右手"
+        hand = self.p2_hand.replace("left", "左手", 2).replace("right", "右手", 2)
         ttk.Label(group_p2, text="持拍手：" + hand)\
             .pack(side="right", expand=1, anchor="center", padx=5)
         # ~~~~~~~~~~~~~
