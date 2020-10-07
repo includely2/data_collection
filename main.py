@@ -552,16 +552,22 @@ class CollectDataWindow():
                 set_p2.set(str(self.data.iloc[-1][data_dict['set2']]))
                 game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
                 game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
-                for i in ['1', '2']:
-                    tmp_score = eval('score_p' + i)
-                    if self.data.iloc[-1][data_dict['score' + i]] == 0:    
-                        tmp_score.set('0')
-                    elif self.data.iloc[-1][data_dict['score' + i]] == 1:
-                        tmp_score.set('15')
-                    elif self.data.iloc[-1][data_dict['score' + i]] == 2:
-                        tmp_score.set('30')
-                    elif self.data.iloc[-1][data_dict['score' + i]] == 3:
-                        tmp_score.set('40')
+
+                int_score_array = ['0', '15', '30', '40']
+                score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                    score_p1.set(int_score_array[score_p1_tmp])
+                    score_p2.set(int_score_array[score_p2_tmp])
+                elif score_p1_tmp == score_p2_tmp:
+                    score_p1.set('40')
+                    score_p2.set('40')
+                elif score_p1_tmp > score_p2_tmp:
+                    score_p1.set('AD')
+                    score_p2.set('-')
+                elif score_p1_tmp < score_p2_tmp:
+                    score_p1.set('-')
+                    score_p2.set('AD')
                 # update self.point
                 if self.data.iloc[-1][data_dict['game1']] == 0 and \
                     self.data.iloc[-1][data_dict['game2']] == 0 and \
