@@ -885,6 +885,12 @@ class CollectDataWindow():
             elif server.get() == '':
                 msg.showerror(title='错误', message='请选择发球方！')
             elif winner.get() == '':
+                # update table
+                point_value = []
+                for j in range(len(self.col_name)):
+                    point_value.append(self.point[-1][j])
+                table.insert('', 'end', values=point_value)
+                # update self.point
                 self.point = np.vstack((self.point, np.zeros((1, self.data_len), dtype=int)))
                 self.point[-1][data_dict['set']] = self.point[-2][data_dict['set']]
                 self.point[-1][data_dict['game']] = self.point[-2][data_dict['game']]
@@ -912,6 +918,11 @@ class CollectDataWindow():
                 self.game2 = self.point[-1][data_dict['game2']]
                 self.set1 = self.point[-1][data_dict['set1']]
                 self.set2 = self.point[-1][data_dict['set2']]
+                # update table
+                items = table.get_children()
+                for item in items:
+                    if table.item(item, 'values')[data_dict['score']] == str(self.point[-1][data_dict['score']]):
+                        table.delete(item)
                 for i in range(len(self.point)):
                     self.point[i][data_dict['winner']] = player
                     data_value = []
@@ -942,7 +953,144 @@ class CollectDataWindow():
             if score_p1.get() == '':
                 msg.showerror(title='错误', message='请点击“开始比赛”！')
             else:
-                msg.showinfo(title='提示', message='待开发！')
+                if len(self.point) == 1:
+                    if len(self.data.index) == 0:
+                        msg.showerror(title='错误', message='无可撤回数据！')
+                    else:
+                        if self.data.iloc[-1][data_dict['rally']] == 1:
+                            # update self.data
+                            score_no = self.data.iloc[-1][data_dict['score']]
+                            self.data = self.data.drop(index=self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].index)
+                            self.data.to_csv(self.file_name, index=False, sep=',')
+                            self.point = np.zeros((1, self.data_len), dtype=int)
+                            if len(self.data.index) == 0:
+                                # update score board
+                                set_p1.set('0')
+                                set_p2.set('0')
+                                game_p1.set('0')
+                                game_p2.set('0')
+                                score_p1.set('0')
+                                score_p2.set('0')
+                                # update self.point
+                                self.point[0][data_dict['set']] = 1
+                                self.point[0][data_dict['game']] = 1
+                                self.point[0][data_dict['score']] = 1
+                                self.point[0][data_dict['rally']] = 1
+                                # update memory
+                                self.set = 0
+                                self.game = 0
+                                self.score = 0
+                            else:
+                                # update score board
+                                set_p1.set(str(self.data.iloc[-1][data_dict['set1']]))
+                                set_p2.set(str(self.data.iloc[-1][data_dict['set2']]))
+                                game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
+                                game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
+
+                                int_score_array = ['0', '15', '30', '40']
+                                score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                                score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                                if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                                    score_p1.set(int_score_array[score_p1_tmp])
+                                    score_p2.set(int_score_array[score_p2_tmp])
+                                elif score_p1_tmp == score_p2_tmp:
+                                    score_p1.set('40')
+                                    score_p2.set('40')
+                                elif score_p1_tmp > score_p2_tmp:
+                                    score_p1.set('AD')
+                                    score_p2.set('-')
+                                elif score_p1_tmp < score_p2_tmp:
+                                    score_p1.set('-')
+                                    score_p2.set('AD')
+                                # update self.point
+                                if self.data.iloc[-1][data_dict['game1']] == 0 and \
+                                    self.data.iloc[-1][data_dict['game2']] == 0 and \
+                                    self.data.iloc[-1][data_dict['set1']] != 0 and \
+                                    self.data.iloc[-1][data_dict['set2']] != 0:
+                                        self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']] + 1
+                                else:
+                                    self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']]
+                
+                                if self.data.iloc[-1][data_dict['score1']] == 0 and \
+                                    self.data.iloc[-1][data_dict['score2']] == 0:
+                                    self.point[0][data_dict['game']] = self.data.iloc[-1][data_dict['game']] + 1
+                                else:
+                                    self.point[0][data_dict['game']] = self.data.iloc[-1][data_dict['game']]
+                
+                                self.point[0][data_dict['score']] = self.data.iloc[-1][data_dict['score']] + 1
+                                self.point[0][data_dict['rally']] = 1
+                                self.point[0][data_dict['score1']] = self.data.iloc[-1][data_dict['score1']]
+                                self.point[0][data_dict['score2']] = self.data.iloc[-1][data_dict['score2']]
+                                self.point[0][data_dict['game1']] = self.data.iloc[-1][data_dict['game1']]
+                                self.point[0][data_dict['game2']] = self.data.iloc[-1][data_dict['game2']]
+                                self.point[0][data_dict['set1']] = self.data.iloc[-1][data_dict['set1']]
+                                self.point[0][data_dict['set2']] = self.data.iloc[-1][data_dict['set2']]
+                                # update memory
+                                self.set = self.point[0][data_dict['set']] - 1
+                                self.game = self.point[0][data_dict['game']] - 1
+                                self.score = self.point[0][data_dict['score']] - 1
+                            # update table
+                            items = table.get_children()
+                            for item in items:
+                                if table.item(item, 'values')[data_dict['score']] == str(score_no):
+                                    table.delete(item)
+                        else:
+                            score_no = self.data.iloc[-1][data_dict['score']]
+                            rally_no = self.data.iloc[-1][data_dict['rally']]
+                            # update self.point
+                            self.point = self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].values
+                            self.point[-1] = np.zeros((1, self.data_len), dtype=int)
+                            self.point[-1][data_dict['set']] = self.point[-2][data_dict['set']]
+                            self.point[-1][data_dict['game']] = self.point[-2][data_dict['game']]
+                            self.point[-1][data_dict['score']] = self.point[-2][data_dict['score']]
+                            self.point[-1][data_dict['rally']] = self.point[-2][data_dict['rally']] + 1
+                            self.point[-1][data_dict['score1']] = self.point[-2][data_dict['score1']]
+                            self.point[-1][data_dict['score2']] = self.point[-2][data_dict['score2']]
+                            self.point[-1][data_dict['game1']] = self.point[-2][data_dict['game1']]
+                            self.point[-1][data_dict['game2']] = self.point[-2][data_dict['game2']]
+                            self.point[-1][data_dict['set1']] = self.point[-2][data_dict['set1']]
+                            self.point[-1][data_dict['set2']] = self.point[-2][data_dict['set2']]
+                            # update self.data
+                            self.data = self.data.drop(index=self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].index)
+                            self.data.to_csv(self.file_name, index=False, sep=',')
+                            # update score board
+                            set_p1.set(str(self.data.iloc[-1][data_dict['set1']]))
+                            set_p2.set(str(self.data.iloc[-1][data_dict['set2']]))
+                            game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
+                            game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
+
+                            int_score_array = ['0', '15', '30', '40']
+                            score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                            score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                            if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                                score_p1.set(int_score_array[score_p1_tmp])
+                                score_p2.set(int_score_array[score_p2_tmp])
+                            elif score_p1_tmp == score_p2_tmp:
+                                score_p1.set('40')
+                                score_p2.set('40')
+                            elif score_p1_tmp > score_p2_tmp:
+                                score_p1.set('AD')
+                                score_p2.set('-')
+                            elif score_p1_tmp < score_p2_tmp:
+                                score_p1.set('-')
+                                score_p2.set('AD')
+                            # update table
+                            items = table.get_children()
+                            for item in items:
+                                if table.item(item, 'values')[data_dict['score']] == str(score_no) and table.item(item, 'values')[data_dict['rally']] == str(rally_no):
+                                    table.delete(item)
+                else:
+                    # update self.point
+                    self.point = np.delete(self.point, -2, axis=0)
+                    self.point[-1][data_dict['rally']] = self.point[-1][data_dict['rally']] - 1
+                    # update table
+                    score_no = self.point[-1][data_dict['score']]
+                    rally_no = self.point[-1][data_dict['rally']]
+                    items = table.get_children()
+                    for item in items:
+                        if table.item(item, 'values')[data_dict['score']] == str(score_no) and table.item(item, 'values')[data_dict['rally']] == str(rally_no):
+                            table.delete(item)
+                msg.showinfo(title='提示', message='撤回一拍成功！')
 
         # ----------------------------------------
         # withdraw one score
@@ -954,51 +1102,86 @@ class CollectDataWindow():
                 if len(self.data.index) == 0:
                     msg.showerror(title='错误', message='无可撤回数据！')
                 else:
-                    # update self.data
-                    score_no = self.data.iloc[-1][data_dict['score']]
-                    self.data = self.data.drop(index=self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].index)
-                    self.data.to_csv(self.file_name, index=False, sep=',')
-                    self.point = np.zeros((1, self.data_len), dtype=int)
-                    if len(self.data.index) == 0:
-                        # update score board
-                        set_p1.set('0')
-                        set_p2.set('0')
-                        game_p1.set('0')
-                        game_p2.set('0')
-                        score_p1.set('0')
-                        score_p2.set('0')
-                        # update self.point
-                        self.point[0][data_dict['set']] = 1
-                        self.point[0][data_dict['game']] = 1
-                        self.point[0][data_dict['score']] = 1
-                        self.point[0][data_dict['rally']] = 1
-                        # update memory
-                        self.set = 0
-                        self.game = 0
-                        self.score = 0
-                    else:
-                        # update score board
-                        set_p1.set(str(self.data.iloc[-1][data_dict['set1']]))
-                        set_p2.set(str(self.data.iloc[-1][data_dict['set2']]))
-                        game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
-                        game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
+                    if len(self.point) == 1:
+                        # update self.data
+                        score_no = self.data.iloc[-1][data_dict['score']]
+                        self.data = self.data.drop(index=self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].index)
+                        self.data.to_csv(self.file_name, index=False, sep=',')
+                        self.point = np.zeros((1, self.data_len), dtype=int)
+                        if len(self.data.index) == 0:
+                            # update score board
+                            set_p1.set('0')
+                            set_p2.set('0')
+                            game_p1.set('0')
+                            game_p2.set('0')
+                            score_p1.set('0')
+                            score_p2.set('0')
+                            # update self.point
+                            self.point[0][data_dict['set']] = 1
+                            self.point[0][data_dict['game']] = 1
+                            self.point[0][data_dict['score']] = 1
+                            self.point[0][data_dict['rally']] = 1
+                            # update memory
+                            self.set = 0
+                            self.game = 0
+                            self.score = 0
+                        else:
+                            # update score board
+                            set_p1.set(str(self.data.iloc[-1][data_dict['set1']]))
+                            set_p2.set(str(self.data.iloc[-1][data_dict['set2']]))
+                            game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
+                            game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
 
-                        int_score_array = ['0', '15', '30', '40']
-                        score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
-                        score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
-                        if score_p1_tmp <= 3 and score_p2_tmp <= 3:
-                            score_p1.set(int_score_array[score_p1_tmp])
-                            score_p2.set(int_score_array[score_p2_tmp])
-                        elif score_p1_tmp == score_p2_tmp:
-                            score_p1.set('40')
-                            score_p2.set('40')
-                        elif score_p1_tmp > score_p2_tmp:
-                            score_p1.set('AD')
-                            score_p2.set('-')
-                        elif score_p1_tmp < score_p2_tmp:
-                            score_p1.set('-')
-                            score_p2.set('AD')
+                            int_score_array = ['0', '15', '30', '40']
+                            score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                            score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                            if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                                score_p1.set(int_score_array[score_p1_tmp])
+                                score_p2.set(int_score_array[score_p2_tmp])
+                            elif score_p1_tmp == score_p2_tmp:
+                                score_p1.set('40')
+                                score_p2.set('40')
+                            elif score_p1_tmp > score_p2_tmp:
+                                score_p1.set('AD')
+                                score_p2.set('-')
+                            elif score_p1_tmp < score_p2_tmp:
+                                score_p1.set('-')
+                                score_p2.set('AD')
+                            # update self.point
+                            if self.data.iloc[-1][data_dict['game1']] == 0 and \
+                                self.data.iloc[-1][data_dict['game2']] == 0 and \
+                                self.data.iloc[-1][data_dict['set1']] != 0 and \
+                                self.data.iloc[-1][data_dict['set2']] != 0:
+                                    self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']] + 1
+                            else:
+                                self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']]
+                
+                            if self.data.iloc[-1][data_dict['score1']] == 0 and \
+                                self.data.iloc[-1][data_dict['score2']] == 0:
+                                self.point[0][data_dict['game']] = self.data.iloc[-1][data_dict['game']] + 1
+                            else:
+                                self.point[0][data_dict['game']] = self.data.iloc[-1][data_dict['game']]
+                
+                            self.point[0][data_dict['score']] = self.data.iloc[-1][data_dict['score']] + 1
+                            self.point[0][data_dict['rally']] = 1
+                            self.point[0][data_dict['score1']] = self.data.iloc[-1][data_dict['score1']]
+                            self.point[0][data_dict['score2']] = self.data.iloc[-1][data_dict['score2']]
+                            self.point[0][data_dict['game1']] = self.data.iloc[-1][data_dict['game1']]
+                            self.point[0][data_dict['game2']] = self.data.iloc[-1][data_dict['game2']]
+                            self.point[0][data_dict['set1']] = self.data.iloc[-1][data_dict['set1']]
+                            self.point[0][data_dict['set2']] = self.data.iloc[-1][data_dict['set2']]
+                            # update memory
+                            self.set = self.point[0][data_dict['set']] - 1
+                            self.game = self.point[0][data_dict['game']] - 1
+                            self.score = self.point[0][data_dict['score']] - 1
+                        # update table
+                        items = table.get_children()
+                        for item in items:
+                            if table.item(item, 'values')[data_dict['score']] == str(score_no):
+                                table.delete(item)
+                    else:
                         # update self.point
+                        self.point = np.zeros((1, self.data_len), dtype=int)
                         if self.data.iloc[-1][data_dict['game1']] == 0 and \
                             self.data.iloc[-1][data_dict['game2']] == 0 and \
                             self.data.iloc[-1][data_dict['set1']] != 0 and \
@@ -1006,7 +1189,7 @@ class CollectDataWindow():
                                 self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']] + 1
                         else:
                             self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']]
-                
+            
                         if self.data.iloc[-1][data_dict['score1']] == 0 and \
                             self.data.iloc[-1][data_dict['score2']] == 0:
                             self.point[0][data_dict['game']] = self.data.iloc[-1][data_dict['game']] + 1
@@ -1021,24 +1204,24 @@ class CollectDataWindow():
                         self.point[0][data_dict['game2']] = self.data.iloc[-1][data_dict['game2']]
                         self.point[0][data_dict['set1']] = self.data.iloc[-1][data_dict['set1']]
                         self.point[0][data_dict['set2']] = self.data.iloc[-1][data_dict['set2']]
-                        # update memory
-                        self.set = self.point[0][data_dict['set']] - 1
-                        self.game = self.point[0][data_dict['game']] - 1
-                        self.score = self.point[0][data_dict['score']] - 1
-                    # update table
-                    items = table.get_children()
-                    for item in items:
-                        if table.item(item, 'values')[data_dict['score']] == str(score_no):
-                            table.delete(item)
+                        # update table
+                        score_no = self.point[-1][data_dict['score']]
+                        items = table.get_children()
+                        for item in items:
+                            if table.item(item, 'values')[data_dict['score']] == str(score_no):
+                                table.delete(item)
                     msg.showinfo(title='提示', message='撤回一分成功！')
 
         # ----------------------------------------
         # export data
         # ----------------------------------------
         def button_export():
-            self.data.to_csv(self.file_name, index=False, sep=',')
-            msg.showinfo(title='提示', message='数据导出成功！')
-            self.window.destroy()
+            if len(self.point) > 1:
+                msg.showerror(title='错误', message='请录完当前一分，或撤回这一分！')
+            else:
+                self.data.to_csv(self.file_name, index=False, sep=',')
+                msg.showinfo(title='提示', message='数据导出成功！')
+                self.window.destroy()
         
         # ====================================================================
         # widget
