@@ -195,6 +195,8 @@ class NewPlayerWindow():
                 p2_h = p2_hand.get()
                 if p1 == '' or p2 == '':
                     msg.showerror(title='错误', message='请输入球员姓名！')
+                elif p1 == p2:
+                    msg.showerror(title='错误', message='双方球员姓名相同！')
                 elif p1_h == '' or p2_h == '':
                     msg.showerror(title='错误', message='请选择球员惯用手')
                 else:
@@ -219,6 +221,8 @@ class NewPlayerWindow():
                 p4_h = p4_hand.get()
                 if p1 == '' or p2 == '' or p3 == '' or p4 == '':
                     msg.showerror(title='错误', message='请输入球员姓名！')
+                elif p1 + p2 == p3 + p4:
+                    msg.showerror(title='错误', message='双方球员姓名相同！')
                 elif p1_h == '' or p2_h == '' or p3_h == '' or p4_h == '':
                     msg.showerror(title='错误', message='请选择球员惯用手')
                 else:
@@ -884,6 +888,12 @@ class CollectDataWindow():
                 msg.showerror(title='错误', message='请点击“开始比赛”！')
             elif server.get() == '':
                 msg.showerror(title='错误', message='请选择发球方！')
+            elif self.point[-1][data_dict['position']] == 0:
+                msg.showerror(title='错误', message='请选择站位！')
+            elif self.point[-1][data_dict['place']] == 0:
+                msg.showerror(title='错误', message='请选择落点！')
+            elif self.point[-1][data_dict['state']] == 0:
+                msg.showerror(title='错误', message='请选择状态！')
             elif winner.get() == '':
                 # update table
                 point_value = []

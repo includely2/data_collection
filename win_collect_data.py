@@ -416,6 +416,12 @@ class CollectDataWindow():
                 msg.showerror(title='错误', message='请点击“开始比赛”！')
             elif server.get() == '':
                 msg.showerror(title='错误', message='请选择发球方！')
+            elif self.point[-1][data_dict['position']] == 0:
+                msg.showerror(title='错误', message='请选择站位！')
+            elif self.point[-1][data_dict['place']] == 0:
+                msg.showerror(title='错误', message='请选择落点！')
+            elif self.point[-1][data_dict['state']] == 0:
+                msg.showerror(title='错误', message='请选择状态！')
             elif winner.get() == '':
                 # update table
                 point_value = []
