@@ -33,6 +33,7 @@ class CollectDataWindow():
             self.data = dataframe
         self.data_len = len(self.data.columns)
         self.point = np.zeros((1, self.data_len), dtype=int)
+        self.is_tiebreak = False
 
         self.set = 0
         self.game = 0
@@ -89,21 +90,48 @@ class CollectDataWindow():
                 game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
                 game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
 
-                int_score_array = ['0', '15', '30', '40']
-                score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
-                score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
-                if score_p1_tmp <= 3 and score_p2_tmp <= 3:
-                    score_p1.set(int_score_array[score_p1_tmp])
-                    score_p2.set(int_score_array[score_p2_tmp])
-                elif score_p1_tmp == score_p2_tmp:
-                    score_p1.set('40')
-                    score_p2.set('40')
-                elif score_p1_tmp > score_p2_tmp:
-                    score_p1.set('AD')
-                    score_p2.set('-')
-                elif score_p1_tmp < score_p2_tmp:
-                    score_p1.set('-')
-                    score_p2.set('AD')
+                if int(set_p1.get()) != self.s_no - 1 or int(set_p2.get()) != self.s_no - 1 or \
+                (int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == '6tie7'):
+                    if game_p1.get() == '6' and game_p2.get() == '6':
+                        self.is_tiebreak = True
+                    else:
+                        self.is_tiebreak = False
+                elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == 'tie7':
+                    self.is_tiebreak = True
+                elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == 'tie10':
+                    self.is_tiebreak = True
+                elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == '6tie10':
+                    if game_p1.get() == '6' and game_p2.get() == '6':
+                        self.is_tiebreak = True
+                    else:
+                        self.is_tiebreak = False
+                elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == '12tie7':
+                    if game_p1.get() == '12' and game_p2.get() == '12':
+                        self.is_tiebreak = True
+                    else:
+                        self.is_tiebreak = False
+                elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == 'long':
+                    self.is_tiebreak = False
+
+                if self.is_tiebreak == False:
+                    int_score_array = ['0', '15', '30', '40']
+                    score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                    score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                    if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                        score_p1.set(int_score_array[score_p1_tmp])
+                        score_p2.set(int_score_array[score_p2_tmp])
+                    elif score_p1_tmp == score_p2_tmp:
+                        score_p1.set('40')
+                        score_p2.set('40')
+                    elif score_p1_tmp > score_p2_tmp:
+                        score_p1.set('AD')
+                        score_p2.set('-')
+                    elif score_p1_tmp < score_p2_tmp:
+                        score_p1.set('-')
+                        score_p2.set('AD')
+                else:
+                    score_p1.set(self.data.iloc[-1][data_dict['score1']])
+                    score_p2.set(self.data.iloc[-1][data_dict['score2']])
                 # update self.point
                 if self.data.iloc[-1][data_dict['game1']] == 0 and \
                     self.data.iloc[-1][data_dict['game2']] == 0 and \
@@ -251,6 +279,7 @@ class CollectDataWindow():
             if int(set_p1.get()) != self.s_no - 1 or int(set_p2.get()) != self.s_no - 1 or \
                 (int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == '6tie7'):
                 if game_p1.get() == '6' and game_p2.get() == '6':
+                    self.is_tiebreak = True
                     score.set(str(int(score.get()) + 1))
                     s_value = int(score.get())
                     s_other_value = int(score_other.get())
@@ -265,6 +294,7 @@ class CollectDataWindow():
                         score.set('0')
                         score_other.set('0')
                 else:
+                    self.is_tiebreak = False
                     if score.get() == '0':
                         score.set('15')
                     elif score.get() == '15':
@@ -287,6 +317,7 @@ class CollectDataWindow():
                         score.set('40')
                         score_other.set('40')
             elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == 'tie7':
+                self.is_tiebreak = True
                 score.set(str(int(score.get()) + 1))
                 s_value = int(score.get())
                 s_other_value = int(score_other.get())
@@ -301,6 +332,7 @@ class CollectDataWindow():
                     score.set('0')
                     score_other.set('0')
             elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == 'tie10':
+                self.is_tiebreak = True
                 score.set(str(int(score.get()) + 1))
                 s_value = int(score.get())
                 s_other_value = int(score_other.get())
@@ -316,6 +348,7 @@ class CollectDataWindow():
                     score_other.set('0')
             elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == '6tie10':
                 if game_p1.get() == '6' and game_p2.get() == '6':
+                    self.is_tiebreak = True
                     score.set(str(int(score.get()) + 1))
                     s_value = int(score.get())
                     s_other_value = int(score_other.get())
@@ -330,6 +363,7 @@ class CollectDataWindow():
                         score.set('0')
                         score_other.set('0')
                 else:
+                    self.is_tiebreak = False
                     if score.get() == '0':
                         score.set('15')
                     elif score.get() == '15':
@@ -353,6 +387,7 @@ class CollectDataWindow():
                         score_other.set('40')
             elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == '12tie7':
                 if game_p1.get() == '12' and game_p2.get() == '12':
+                    self.is_tiebreak = True
                     score.set(str(int(score.get()) + 1))
                     s_value = int(score.get())
                     s_other_value = int(score_other.get())
@@ -367,6 +402,7 @@ class CollectDataWindow():
                         score.set('0')
                         score_other.set('0')
                 else:
+                    self.is_tiebreak = False
                     if score.get() == '0':
                         score.set('15')
                     elif score.get() == '15':
@@ -389,6 +425,7 @@ class CollectDataWindow():
                         score.set('40')
                         score_other.set('40')
             elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == 'long':
+                self.is_tiebreak = False
                 if score.get() == '0':
                     score.set('15')
                 elif score.get() == '15':
@@ -525,21 +562,25 @@ class CollectDataWindow():
                                 game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
                                 game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
 
-                                int_score_array = ['0', '15', '30', '40']
-                                score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
-                                score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
-                                if score_p1_tmp <= 3 and score_p2_tmp <= 3:
-                                    score_p1.set(int_score_array[score_p1_tmp])
-                                    score_p2.set(int_score_array[score_p2_tmp])
-                                elif score_p1_tmp == score_p2_tmp:
-                                    score_p1.set('40')
-                                    score_p2.set('40')
-                                elif score_p1_tmp > score_p2_tmp:
-                                    score_p1.set('AD')
-                                    score_p2.set('-')
-                                elif score_p1_tmp < score_p2_tmp:
-                                    score_p1.set('-')
-                                    score_p2.set('AD')
+                                if self.is_tiebreak == False:
+                                    int_score_array = ['0', '15', '30', '40']
+                                    score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                                    score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                                    if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                                        score_p1.set(int_score_array[score_p1_tmp])
+                                        score_p2.set(int_score_array[score_p2_tmp])
+                                    elif score_p1_tmp == score_p2_tmp:
+                                        score_p1.set('40')
+                                        score_p2.set('40')
+                                    elif score_p1_tmp > score_p2_tmp:
+                                        score_p1.set('AD')
+                                        score_p2.set('-')
+                                    elif score_p1_tmp < score_p2_tmp:
+                                        score_p1.set('-')
+                                        score_p2.set('AD')
+                                else:
+                                    score_p1.set(self.data.iloc[-1][data_dict['score1']])
+                                    score_p2.set(self.data.iloc[-1][data_dict['score2']])
                                 # update self.point
                                 if self.data.iloc[-1][data_dict['game1']] == 0 and \
                                     self.data.iloc[-1][data_dict['game2']] == 0 and \
@@ -597,21 +638,25 @@ class CollectDataWindow():
                             game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
                             game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
 
-                            int_score_array = ['0', '15', '30', '40']
-                            score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
-                            score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
-                            if score_p1_tmp <= 3 and score_p2_tmp <= 3:
-                                score_p1.set(int_score_array[score_p1_tmp])
-                                score_p2.set(int_score_array[score_p2_tmp])
-                            elif score_p1_tmp == score_p2_tmp:
-                                score_p1.set('40')
-                                score_p2.set('40')
-                            elif score_p1_tmp > score_p2_tmp:
-                                score_p1.set('AD')
-                                score_p2.set('-')
-                            elif score_p1_tmp < score_p2_tmp:
-                                score_p1.set('-')
-                                score_p2.set('AD')
+                            if self.is_tiebreak == False:
+                                int_score_array = ['0', '15', '30', '40']
+                                score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                                score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                                if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                                    score_p1.set(int_score_array[score_p1_tmp])
+                                    score_p2.set(int_score_array[score_p2_tmp])
+                                elif score_p1_tmp == score_p2_tmp:
+                                    score_p1.set('40')
+                                    score_p2.set('40')
+                                elif score_p1_tmp > score_p2_tmp:
+                                    score_p1.set('AD')
+                                    score_p2.set('-')
+                                elif score_p1_tmp < score_p2_tmp:
+                                    score_p1.set('-')
+                                    score_p2.set('AD')
+                            else:
+                                score_p1.set(self.data.iloc[-1][data_dict['score1']])
+                                score_p2.set(self.data.iloc[-1][data_dict['score2']])
                             # update table
                             items = table.get_children()
                             for item in items:
@@ -670,21 +715,25 @@ class CollectDataWindow():
                             game_p1.set(str(self.data.iloc[-1][data_dict['game1']]))
                             game_p2.set(str(self.data.iloc[-1][data_dict['game2']]))
 
-                            int_score_array = ['0', '15', '30', '40']
-                            score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
-                            score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
-                            if score_p1_tmp <= 3 and score_p2_tmp <= 3:
-                                score_p1.set(int_score_array[score_p1_tmp])
-                                score_p2.set(int_score_array[score_p2_tmp])
-                            elif score_p1_tmp == score_p2_tmp:
-                                score_p1.set('40')
-                                score_p2.set('40')
-                            elif score_p1_tmp > score_p2_tmp:
-                                score_p1.set('AD')
-                                score_p2.set('-')
-                            elif score_p1_tmp < score_p2_tmp:
-                                score_p1.set('-')
-                                score_p2.set('AD')
+                            if self.is_tiebreak == False:
+                                int_score_array = ['0', '15', '30', '40']
+                                score_p1_tmp = self.data.iloc[-1][data_dict['score1']]
+                                score_p2_tmp = self.data.iloc[-1][data_dict['score2']]
+                                if score_p1_tmp <= 3 and score_p2_tmp <= 3:
+                                    score_p1.set(int_score_array[score_p1_tmp])
+                                    score_p2.set(int_score_array[score_p2_tmp])
+                                elif score_p1_tmp == score_p2_tmp:
+                                    score_p1.set('40')
+                                    score_p2.set('40')
+                                elif score_p1_tmp > score_p2_tmp:
+                                    score_p1.set('AD')
+                                    score_p2.set('-')
+                                elif score_p1_tmp < score_p2_tmp:
+                                    score_p1.set('-')
+                                    score_p2.set('AD')
+                            else:
+                                score_p1.set(self.data.iloc[-1][data_dict['score1']])
+                                score_p2.set(self.data.iloc[-1][data_dict['score2']])
                             # update self.point
                             if self.data.iloc[-1][data_dict['game1']] == 0 and \
                                 self.data.iloc[-1][data_dict['game2']] == 0 and \
@@ -1250,3 +1299,4 @@ class CollectDataWindow():
         table.config(yscrollcommand=table_y.set)
         
         table.pack(side='left', expand=1, anchor='center')
+  
