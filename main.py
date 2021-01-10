@@ -605,10 +605,12 @@ class CollectDataWindow():
                     score_p1.set(self.data.iloc[-1][data_dict['score1']])
                     score_p2.set(self.data.iloc[-1][data_dict['score2']])
                 # update self.point
-                if self.data.iloc[-1][data_dict['game1']] == 0 and \
+                if self.data.iloc[-1][data_dict['score1']] == 0 and \
+                    self.data.iloc[-1][data_dict['score2']] == 0 and \
+                    self.data.iloc[-1][data_dict['game1']] == 0 and \
                     self.data.iloc[-1][data_dict['game2']] == 0 and \
-                    self.data.iloc[-1][data_dict['set1']] != 0 or \
-                    self.data.iloc[-1][data_dict['set2']] != 0:
+                    (self.data.iloc[-1][data_dict['set1']] != 0 or \
+                    self.data.iloc[-1][data_dict['set2']] != 0):
                     self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']] + 1
                 else:
                     self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']]
@@ -1054,10 +1056,12 @@ class CollectDataWindow():
                                     score_p1.set(self.data.iloc[-1][data_dict['score1']])
                                     score_p2.set(self.data.iloc[-1][data_dict['score2']])
                                 # update self.point
-                                if self.data.iloc[-1][data_dict['game1']] == 0 and \
+                                if self.data.iloc[-1][data_dict['score1']] == 0 and \
+                                    self.data.iloc[-1][data_dict['score2']] == 0 and \
+                                    self.data.iloc[-1][data_dict['game1']] == 0 and \
                                     self.data.iloc[-1][data_dict['game2']] == 0 and \
-                                    self.data.iloc[-1][data_dict['set1']] != 0 or \
-                                    self.data.iloc[-1][data_dict['set2']] != 0:
+                                    (self.data.iloc[-1][data_dict['set1']] != 0 or \
+                                    self.data.iloc[-1][data_dict['set2']] != 0):
                                         self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']] + 1
                                 else:
                                     self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']]
@@ -1207,10 +1211,12 @@ class CollectDataWindow():
                                 score_p1.set(self.data.iloc[-1][data_dict['score1']])
                                 score_p2.set(self.data.iloc[-1][data_dict['score2']])
                             # update self.point
-                            if self.data.iloc[-1][data_dict['game1']] == 0 and \
+                            if self.data.iloc[-1][data_dict['score1']] == 0 and \
+                                self.data.iloc[-1][data_dict['score2']] == 0 and \
+                                self.data.iloc[-1][data_dict['game1']] == 0 and \
                                 self.data.iloc[-1][data_dict['game2']] == 0 and \
-                                self.data.iloc[-1][data_dict['set1']] != 0 or \
-                                self.data.iloc[-1][data_dict['set2']] != 0:
+                                (self.data.iloc[-1][data_dict['set1']] != 0 or \
+                                self.data.iloc[-1][data_dict['set2']] != 0):
                                     self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']] + 1
                             else:
                                 self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']]
@@ -1241,10 +1247,12 @@ class CollectDataWindow():
                     else:
                         # update self.point
                         self.point = np.zeros((1, self.data_len), dtype=int)
-                        if self.data.iloc[-1][data_dict['game1']] == 0 and \
+                        if self.data.iloc[-1][data_dict['score1']] == 0 and \
+                            self.data.iloc[-1][data_dict['score2']] == 0 and \
+                            self.data.iloc[-1][data_dict['game1']] == 0 and \
                             self.data.iloc[-1][data_dict['game2']] == 0 and \
-                            self.data.iloc[-1][data_dict['set1']] != 0 or \
-                            self.data.iloc[-1][data_dict['set2']] != 0:
+                            (self.data.iloc[-1][data_dict['set1']] != 0 or \
+                            self.data.iloc[-1][data_dict['set2']] != 0):
                                 self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']] + 1
                         else:
                             self.point[0][data_dict['set']] = self.data.iloc[-1][data_dict['set']]
