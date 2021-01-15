@@ -509,7 +509,7 @@ class CollectDataWindow():
                 # write csv
                 point = pd.DataFrame(self.point, columns=['盘', '局', '分', '球', '球员', '站位', '技术', '落点', '状态', '效果', '分1', '分2', '局1', '局2', '盘1', '盘2'])
                 self.data = self.data.append(point, ignore_index=True)
-                self.data.to_csv(self.file_name, index=False, sep=',')
+                self.data.to_csv(self.file_name, index=False, sep=',', encoding='utf_8_sig')
                 # update self.point
                 self.point = np.zeros((1, self.data_len), dtype=int)
                 self.point[0][data_dict['set']] = self.set + 1
@@ -538,7 +538,7 @@ class CollectDataWindow():
                             # update self.data
                             score_no = self.data.iloc[-1][data_dict['score']]
                             self.data = self.data.drop(index=self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].index)
-                            self.data.to_csv(self.file_name, index=False, sep=',')
+                            self.data.to_csv(self.file_name, index=False, sep=',', encoding='utf_8_sig')
                             self.point = np.zeros((1, self.data_len), dtype=int)
                             if len(self.data.index) == 0:
                                 # update score board
@@ -635,7 +635,7 @@ class CollectDataWindow():
                             self.point[-1][data_dict['set2']] = self.point[-2][data_dict['set2']]
                             # update self.data
                             self.data = self.data.drop(index=self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].index)
-                            self.data.to_csv(self.file_name, index=False, sep=',')
+                            self.data.to_csv(self.file_name, index=False, sep=',', encoding='utf_8_sig')
                             # update score board
                             set_p1.set(str(self.data.iloc[-1][data_dict['set1']]))
                             set_p2.set(str(self.data.iloc[-1][data_dict['set2']]))
@@ -693,7 +693,7 @@ class CollectDataWindow():
                         # update self.data
                         score_no = self.data.iloc[-1][data_dict['score']]
                         self.data = self.data.drop(index=self.data.loc[self.data[self.col_name[data_dict['score']]]==score_no].index)
-                        self.data.to_csv(self.file_name, index=False, sep=',')
+                        self.data.to_csv(self.file_name, index=False, sep=',', encoding='utf_8_sig')
                         self.point = np.zeros((1, self.data_len), dtype=int)
                         if len(self.data.index) == 0:
                             # update score board
@@ -814,7 +814,7 @@ class CollectDataWindow():
             if len(self.point) > 1:
                 msg.showerror(title='错误', message='请录完当前一分，或撤回这一分！')
             else:
-                self.data.to_csv(self.file_name, index=False, sep=',')
+                self.data.to_csv(self.file_name, index=False, sep=',', encoding='utf_8_sig')
                 msg.showinfo(title='提示', message='数据导出成功！')
                 self.window.destroy()
         
@@ -1307,4 +1307,4 @@ class CollectDataWindow():
         table.config(yscrollcommand=table_y.set)
         
         table.pack(side='left', expand=1, anchor='center')
-    
+   

@@ -33,7 +33,7 @@ class OpenMatchWindow():
                 msg.showerror(title='错误', message='请选择文件!')
             else:
                 self.window.destroy()
-                pd_data = pd.read_csv(self.file, sep=',')
+                pd_data = pd.read_csv(self.file, sep=',', encoding='utf_8_sig')
                 [m, p1, p2, sn, ds] = self.file.split('/')[-1].split('.')[0].split('-')
                 [temp, p1_name, p1_hand] = p1.split('_')
                 [temp, p2_name, p2_hand] = p2.split('_')
