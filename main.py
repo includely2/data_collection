@@ -709,7 +709,7 @@ class CollectDataWindow():
                     game.set('0')
                     game_other.set('0')
             elif int(set_p1.get()) == self.s_no - 1 and int(set_p2.get()) == self.s_no - 1 and self.d_set == '12tie7':
-                if g_value == 12 and g_other_value == 12:
+                if (g_value == 12 and g_other_value == 12) or (g_value == 12 and g_other_value == 11):
                     game.set('13')
                     time.sleep(1)
                     set_plus(player)
@@ -726,7 +726,7 @@ class CollectDataWindow():
                 else:
                     game.set(str(g_value + 1))
             else:
-                if g_value == 6 and g_other_value == 6:
+                if (g_value == 6 and g_other_value == 6) or (g_value == 6 and g_other_value == 5):
                     game.set('7')
                     time.sleep(1)
                     set_plus(player)
